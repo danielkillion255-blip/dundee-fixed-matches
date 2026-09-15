@@ -480,3 +480,26 @@ function displayAdminFreeTips() {
 // =========================================================
 
 displayAdminFreeTips();
+// =========================================================
+// GOOGLE ANALYTICS - WHATSAPP CLICK TRACKING
+// =========================================================
+
+document.addEventListener("click", function (event) {
+
+    const whatsappLink =
+        event.target.closest('a[href*="wa.me"]');
+
+    if (!whatsappLink) {
+        return;
+    }
+
+    if (typeof gtag === "function") {
+
+        gtag("event", "whatsapp_click", {
+            link_url: whatsappLink.href,
+            page_location: window.location.href
+        });
+
+    }
+
+});
