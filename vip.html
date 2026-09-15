@@ -2144,7 +2144,14 @@ async function activateVipCode() {
                 data && data.message
                     ? data.message
                     : "Invalid VIP code.";
+// GA4 - VIP activation failed
+    if (typeof gtag === "function") {
 
+        gtag("event", "vip_activation_failed", {
+            page_location: window.location.href
+        });
+
+    }
             return;
 
         }
