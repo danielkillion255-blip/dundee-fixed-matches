@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dundee Fixed Matches | Football Predictions</title>
+
+    <meta
+        name="description"
+        content="Dundee Fixed Matches - Daily football predictions, free tips, VIP selections and football results."
+    >
+
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+        /* =====================================================
+           DUNDEE FIXED MATCHES
+           PREMIUM HOME PAGE
+        ===================================================== */
+
+        .home-hero {
+            min-height: 78vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 90px 20px;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(214,176,76,0.12), transparent 30%),
+                radial-gradient(circle at 85% 80%, rgba(214,176,76,0.08), transparent 28%);
+        }
+
+        .home-hero::before {
+            content: "";
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            background: rgba(214,176,76,0.06);
+            filter: blur(8px);
+            top: -220px;
+            left: -180px;
+            pointer-events: none;
+        }
+
+        .home-hero::after {
+            content: "";
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            background: rgba(214,176,76,0.05);
+            bottom: -180px;
+            right: -140px;
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 920px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 19px;
+            border: 1px solid rgba(214,176,76,0.35);
+            border-radius: 30px;
+            color: #e5c45f;
+            background: rgba(214,176,76,0.06);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 30px rgba(214,176,76,0.05);
+        }
+
+        .hero-title {
+            font-size: clamp(44px, 7vw, 84px);
+            line-height: 0.98;
+            margin: 0;
+            font-weight: 900;
+            letter-spacing: -3px;
+        }
+
+        .hero-title span {
+            color: #e5c45f;
+            display: block;
+            text-shadow: 0 0 35px rgba(214,176,76,0.16);
+        }
+
+        .hero-description {
+            max-width: 680px;
+            margin: 27px auto 0;
+            color: #aaa;
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 34px;
+        }
+
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 190px;
+            padding: 15px 25px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: 800;
+            transition: 0.25s ease;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .home-btn-primary {
+            background: linear-gradient(135deg, #f5d36b, #c89d32);
+            color: #111;
+            box-shadow: 0 10px 30px rgba(214,176,76,0.15);
+        }
+
+        .home-btn-secondary {
+            border: 1px solid rgba(214,176,76,0.55);
+            color: #e5c45f;
+            background: rgba(214,176,76,0.03);
+        }
+
+        .home-btn-secondary:hover {
+            background: rgba(214,176,76,0.08);
+        }
+
+        /* =====================================================
+           QUICK STATS
+        ===================================================== */
+
+        .home-stats {
+            max-width: 1050px;
+            margin: -45px auto 70px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .home-stat {
+            background: linear-gradient(145deg, rgba(28,28,28,0.98), rgba(15,15,15,0.98));
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 27px 15px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.22);
+            transition: 0.25s ease;
+        }
+
+        .home-stat:hover {
+            transform: translateY(-4px);
+            border-color: rgba(214,176,76,0.25);
+        }
+
+        .home-stat strong {
+            display: block;
+            color: #e5c45f;
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .home-stat span {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .home-section {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 70px 20px;
+        }
+
+        .home-section-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .home-section-heading small {
+            color: #e5c45f;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+        }
+
+        .home-section-heading h2 {
+            margin: 9px 0 0;
+            font-size: 34px;
+            letter-spacing: -0.5px;
+        }
+
+        .home-section-heading p {
+            color: #858585;
+            max-width: 650px;
+            margin: 13px auto 0;
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           FREE TIPS
+        ===================================================== */
+
+        .home-tips-box {
+            background: linear-gradient(145deg, rgba(19,19,19,0.98), rgba(10,10,10,0.98));
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.22);
+        }
+
+        .home-tips-head,
+        .home-tip {
+            display: grid;
+            grid-template-columns: 120px 1fr 150px 100px;
+            gap: 15px;
+            align-items: center;
+            padding: 18px 22px;
+        }
+
+        .home-tips-head {
+            background: linear-gradient(90deg, rgba(214,176,76,0.08), rgba(255,255,255,0.02));
+            color: #777;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+        }
+
+        .home-tip {
+            border-top: 1px solid rgba(255,255,255,0.055);
+            color: #ddd;
+            transition: 0.2s ease;
+        }
+
+        .home-tip:hover {
+            background: rgba(214,176,76,0.025);
+        }
+
+        .home-tip-date {
+            color: #888;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .home-match {
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .home-tip-prediction {
+            color: #e5c45f;
+            font-weight: 900;
+        }
+
+        .home-tip-odd {
+            color: #fff;
+            font-weight: 900;
+        }
+
+        .home-empty {
+            padding: 38px 20px;
+            text-align: center;
+            color: #707070;
+        }
+
+        .view-all-wrap {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .view-all-link {
+            color: #e5c45f;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .view-all-link:hover {
+            color: #f5d36b;
+        }
+
+        /* =====================================================
+           VIP
+        ===================================================== */
+
+        .home-vip {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 75px 25px;
+            text-align: center;
+            border: 1px solid rgba(214,176,76,0.22);
+            border-radius: 20px;
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(214,176,76,0.11),
+                    rgba(18,18,18,0.98) 62%
+                );
+            box-shadow:
+                0 25px 70px rgba(0,0,0,0.3),
+                inset 0 0 50px rgba(214,176,76,0.025);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-vip::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(214,176,76,0.7), transparent);
+            pointer-events: none;
+        }
+
+        .vip-label {
+            color: #e5c45f;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 2.5px;
+        }
+
+        .home-vip h2 {
+            font-size: 42px;
+            margin: 13px 0;
+        }
+
+        .home-vip-description {
+            max-width: 620px;
+            margin: 0 auto;
+            color: #999;
+            line-height: 1.8;
+        }
+
+        .vip-feature-grid {
+            max-width: 700px;
+            margin: 38px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .vip-feature {
+            padding: 20px 10px;
+            border: 1px solid rgba(255,255,255,0.07);
+            background: rgba(0,0,0,0.28);
+            border-radius: 11px;
+        }
+
+        .vip-feature strong {
+            display: block;
+            color: #e5c45f;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .vip-feature span {
+            color: #777;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* =====================================================
+           RESULTS
+        ===================================================== */
+
+        .home-results {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .home-result {
+            padding: 25px 18px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(25,25,25,0.98), rgba(15,15,15,0.98));
+            border: 1px solid rgba(255,255,255,0.07);
+            text-align: center;
+            transition: 0.25s ease;
+        }
+
+        .home-result:hover {
+            transform: translateY(-4px);
+            border-color: rgba(214,176,76,0.2);
+        }
+
+        .result-status {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .result-status.win {
+            background: rgba(0,200,100,0.10);
+            color: #27d17f;
+            border: 1px solid rgba(39,209,127,0.12);
+        }
+
+        .result-status.loss {
+            background: rgba(255,60,60,0.10);
+            color: #ff5c5c;
+            border: 1px solid rgba(255,92,92,0.12);
+        }
+
+        .home-result h3 {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .home-result p {
+            color: #777;
+            margin: 5px 0 15px;
+            font-size: 13px;
+        }
+
+        .home-result strong {
+            color: #e5c45f;
+        }
+
+        /* =====================================================
+           REVIEWS
+        ===================================================== */
+
+        .home-reviews {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .home-review {
+            background: linear-gradient(145deg, rgba(25,25,25,0.98), rgba(15,15,15,0.98));
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 24px;
+            transition: 0.25s ease;
+        }
+
+        .home-review:hover {
+            transform: translateY(-4px);
+            border-color: rgba(214,176,76,0.2);
+        }
+
+        .review-stars {
+            color: #e5c45f;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .review-text {
+            color: #aaa;
+            line-height: 1.75;
+            font-size: 14px;
+        }
+
+        .review-name {
+            margin-top: 18px;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .review-country {
+            color: #777;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .home-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin-top: 60px;
+            padding: 55px 20px 25px;
+            text-align: center;
+            background:
+                radial-gradient(
+                    circle at top center,
+                    rgba(214,176,76,0.04),
+                    transparent 45%
+                );
+        }
+
+        .footer-logo {
+            font-weight: 900;
+            font-size: 22px;
+        }
+
+        .footer-logo span {
+            color: #e5c45f;
+        }
+
+        .footer-description {
+            color: #707070;
+            margin: 13px auto 22px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 22px;
+            margin-bottom: 27px;
+        }
+
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #e5c45f;
+        }
+
+        .copyright {
+            color: #4f4f4f;
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           TOP NAVIGATION
+           KEEP IT NATIVE - NO JS NAVIGATION
+        ===================================================== */
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .home-tips-head,
+            .home-tip {
+                grid-template-columns: 90px 1fr 90px;
+            }
+
+            .home-tips-head div:nth-child(4),
+            .home-tip .home-tip-odd {
+                display: none;
+            }
+
+            .home-results {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .home-reviews {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .home-hero {
+                min-height: 72vh;
+                padding: 70px 18px;
+            }
+
+            .hero-title {
+                font-size: 46px;
+                letter-spacing: -1px;
+            }
+
+            .hero-description {
+                font-size: 15px;
+            }
+
+            .home-stats {
+                margin-top: -30px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .home-stat {
+                padding: 19px;
+            }
+
+            .home-section {
+                padding: 52px 15px;
+            }
+
+            .home-section-heading h2 {
+                font-size: 28px;
+            }
+
+            .home-tips-head,
+            .home-tip {
+                grid-template-columns: 75px 1fr 80px;
+                padding: 15px 12px;
+                gap: 8px;
+            }
+
+            .home-match {
+                font-size: 13px;
+            }
+
+            .home-tip-prediction {
+                font-size: 12px;
+            }
+
+            .vip-feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .home-vip {
+                margin-left: 15px;
+                margin-right: 15px;
+                padding: 60px 18px;
+            }
+
+            .home-vip h2 {
+                font-size: 33px;
+            }
+
+            .home-results {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .home-result {
+                padding: 20px 10px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .home-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header" id="topHeader">
+
+        <div class="logo">
+            ⚽ DUNDEE<span>FIXED MATCHES</span>
+        </div>
+
+        <nav class="navbar" id="topNavbar">
+
+    <a href="./index.html">Home</a>
+
+    <a href="./fixed-matches.html">Fixed Matches</a>
+
+    <a href="./free-tips.html">Free Tips</a>
+
+    <a href="./vip.html">VIP Tips</a>
+
+    <a href="./results.html">Results</a>
+
+    <a href="./contact.html">Contact</a>
+
+</nav>
+
+        <button
+            class="menu-btn"
+            id="topMenuButton"
+            type="button"
+            aria-label="Open menu">
+            ☰
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="home-hero">
+
+        <div class="hero-inner">
+
+            <div class="hero-badge">
+                ⚽ DAILY FOOTBALL PREDICTIONS
+            </div>
+
+            <h1 class="hero-title">
+                PLAY SMART.
+                <span>WIN SMARTER.</span>
+            </h1>
+
+            <p class="hero-description">
+                Welcome to Dundee Fixed Matches — your destination
+                for daily football tips, carefully selected matches,
+                VIP predictions and performance results.
+            </p>
+
+            <div class="hero-actions">
+
+                <a
+                    href="./free-tips.html"
+                    class="home-btn home-btn-primary">
+                    🔥 VIEW FREE TIPS
+                </a>
+
+                <a
+                    href="./vip.html"
+                    class="home-btn home-btn-secondary">
+                    ⭐ EXPLORE VIP TIPS
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         QUICK STATS
+    ====================================================== -->
+
+    <section class="home-stats">
+
+        <div class="stats-container">
+
+            <div class="home-stat">
+                <strong>DAILY</strong>
+                <span>Football Tips</span>
+            </div>
+
+            <div class="home-stat">
+                <strong>FREE</strong>
+                <span>Daily Selections</span>
+            </div>
+
+            <div class="home-stat">
+                <strong>VIP</strong>
+                <span>Premium Predictions</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FREE TIPS
+    ====================================================== -->
+
+    <section class="home-section">
+
+        <div class="home-section-heading">
+
+            <small>FOOTBALL PREDICTIONS</small>
+
+            <h2>
+                🔥 Today's Free Tips
+            </h2>
+
+            <p>
+                Check today's available selections before the matches begin.
+            </p>
+
+        </div>
+
+        <div class="home-tips-box">
+
+            <div class="home-tips-head">
+
+                <div>DATE</div>
+                <div>MATCH</div>
+                <div>TIP</div>
+                <div>ODD</div>
+
+            </div>
+
+            <div id="homeFreeTips">
+
+                <div class="home-empty">
+                    Loading today's tips...
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="view-all-wrap">
+
+            <a
+                href="./free-tips.html"
+                class="view-all-link">
+                View All Free Tips →
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         VIP
+    ====================================================== -->
+
+    <section class="home-vip">
+
+        <div class="vip-label">
+            PREMIUM FOOTBALL PREDICTIONS
+        </div>
+
+        <h2>
+            ⭐ VIP TIPS
+        </h2>
+
+        <p class="home-vip-description">
+            Get access to premium football selections,
+            carefully selected matches and exclusive VIP predictions.
+        </p>
+
+        <div class="vip-feature-grid">
+
+            <div class="vip-feature">
+                <strong>VIP</strong>
+                <span>Premium Picks</span>
+            </div>
+
+            <div class="vip-feature">
+                <strong>DAILY</strong>
+                <span>New Selections</span>
+            </div>
+
+            <div class="vip-feature">
+                <strong>🔐</strong>
+                <span>Member Access</span>
+            </div>
+
+        </div>
+
+        <a
+            href="./vip.html"
+            class="home-btn home-btn-primary">
+            ⭐ VIEW VIP TIPS
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESULTS
+    ====================================================== -->
+
+    <section class="home-section">
+
+        <div class="home-section-heading">
+
+            <small>PERFORMANCE</small>
+
+            <h2>
+                🏆 Recent Results
+            </h2>
+
+            <p>
+                Follow the latest completed free-tip results.
+            </p>
+
+        </div>
+
+        <div
+            id="homeResults"
+            class="home-results">
+
+            <div class="home-empty">
+                Loading results...
+            </div>
+
+        </div>
+
+        <div class="view-all-wrap">
+
+            <a
+                href="./results.html"
+                class="view-all-link">
+                View Full Results →
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         VIP REVIEWS
+    ====================================================== -->
+
+    <section class="home-section">
+
+        <div class="home-section-heading">
+
+            <small>VIP MEMBER REVIEWS</small>
+
+            <h2>
+                💬 What Our Members Say
+            </h2>
+
+            <p>
+                Feedback from members who have used our VIP service.
+            </p>
+
+        </div>
+
+        <div
+            id="vipReviewsList"
+            class="home-reviews">
+
+            <div class="home-empty">
+                Loading member reviews...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="home-footer">
+
+        <div class="footer-logo">
+            ⚽ DUNDEE<span>FIXED MATCHES</span>
+        </div>
+
+        <p class="footer-description">
+            Daily football predictions and match analysis.
+        </p>
+
+        <div class="footer-links">
+
+            <a href="./index.html">Home</a>
+
+            <a href="./fixed-matches.html">
+                Fixed Matches
+            </a>
+
+            <a href="./free-tips.html">
+                Free Tips
+            </a>
+
+            <a href="./vip.html">
+                VIP Tips
+            </a>
+
+            <a href="./results.html">
+                Results
+            </a>
+
+            <a href="./contact.html">
+                Contact
+            </a>
+
+            <a
+                href="https://wa.me/255759970800?text=Hello%20Dundee%20Fixed%20Matches"
+                target="_blank"
+                rel="noopener">
+                WhatsApp
+            </a>
+
+        </div>
+
+        <p class="copyright">
+            © 2026 Dundee Fixed Matches. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- =====================================================
+         SUPABASE
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+        /* =====================================================
+           SUPABASE CONFIG
+        ===================================================== */
+
+        const SUPABASE_URL =
+            "https://pgvesfuzeonhyfzhshas.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_e4pxjOJc8dZ8sYlOhq15Ng_6Xn3nQ8p";
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+        /* =====================================================
+           TANZANIA LOCAL DATE
+        ===================================================== */
+
+        function getLocalDateString() {
+
+            const now = new Date();
+
+            const year =
+                now.getFullYear();
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(2, "0");
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+
+        /* =====================================================
+           DATE FORMATTER
+        ===================================================== */
+
+        function formatDate(dateString) {
+
+            if (!dateString) {
+                return "-";
+            }
+
+            const date =
+                new Date(
+                    dateString + "T00:00:00"
+                );
+
+            return date.toLocaleDateString(
+                "en-US",
+                {
+                    day: "2-digit",
+                    month: "short"
+                }
+            ).toUpperCase();
+        }
+
+
+        /* =====================================================
+           LOAD TODAY'S FREE TIPS
+        ===================================================== */
+
+        async function loadHomeFreeTips() {
+
+            const container =
+                document.getElementById(
+                    "homeFreeTips"
+                );
+
+            if (!container) return;
+
+            const todayString =
+                getLocalDateString();
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from("free_tips")
+                .select("*")
+                .eq(
+                    "match_date",
+                    todayString
+                )
+                .order(
+                    "match_time",
+                    {
+                        ascending: true
+                    }
+                )
+                .limit(5);
+
+            if (error) {
+
+                console.error(
+                    "FREE TIPS ERROR:",
+                    error
+                );
+
+                container.innerHTML = `
+                    <div class="home-empty">
+                        Unable to load today's tips.
+                    </div>
+                `;
+
+                return;
+            }
+
+            if (!data || data.length === 0) {
+
+                container.innerHTML = `
+                    <div class="home-empty">
+                        No free tips available for today.
+                    </div>
+                `;
+
+                return;
+            }
+
+            container.innerHTML = "";
+
+            data.forEach(function(tip) {
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+                row.className =
+                    "home-tip";
+
+                row.innerHTML = `
+
+                    <div class="home-tip-date">
+                        ${formatDate(
+                            tip.match_date
+                        )}
+                    </div>
+
+                    <div class="home-match">
+                        ${tip.home_team}
+
+                        <span
+                            style="
+                                color:#777;
+                                margin:0 5px;
+                            ">
+                            vs
+                        </span>
+
+                        ${tip.away_team}
+                    </div>
+
+                    <div class="home-tip-prediction">
+                        ${tip.prediction}
+                    </div>
+
+                    <div class="home-tip-odd">
+                        ${
+                            tip.odds !== null &&
+                            tip.odds !== undefined
+                                ? tip.odds
+                                : "-"
+                        }
+                    </div>
+
+                `;
+
+                container.appendChild(row);
+
+            });
+
+        }
+
+
+        /* =====================================================
+           LOAD RECENT RESULTS
+        ===================================================== */
+
+        async function loadHomeResults() {
+
+            const container =
+                document.getElementById(
+                    "homeResults"
+                );
+
+            if (!container) return;
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from("free_tips")
+                .select("*")
+                .in(
+                    "result",
+                    ["won", "lost"]
+                )
+                .order(
+                    "match_date",
+                    {
+                        ascending: false
+                    }
+                )
+                .order(
+                    "match_time",
+                    {
+                        ascending: false
+                    }
+                )
+                .limit(4);
+
+            if (error) {
+
+                console.error(
+                    "RESULTS ERROR:",
+                    error
+                );
+
+                container.innerHTML = `
+                    <div class="home-empty">
+                        Unable to load results.
+                    </div>
+                `;
+
+                return;
+            }
+
+            if (!data || data.length === 0) {
+
+                container.innerHTML = `
+                    <div class="home-empty">
+                        No completed results yet.
+                    </div>
+                `;
+
+                return;
+            }
+
+            container.innerHTML = "";
+
+            data.forEach(function(result) {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "home-result";
+
+                const isWin =
+                    result.result === "won";
+
+                card.innerHTML = `
+
+                    <span
+                        class="result-status ${
+                            isWin
+                                ? "win"
+                                : "loss"
+                        }">
+                        ${
+                            isWin
+                                ? "WON"
+                                : "LOST"
+                        }
+                    </span>
+
+                    <h3>
+                        ${result.home_team}
+                    </h3>
+
+                    <p>
+                        vs ${result.away_team}
+                    </p>
+
+                    <strong>
+                        ${result.prediction}
+                    </strong>
+
+                `;
+
+                container.appendChild(card);
+
+            });
+
+        }
+
+
+        /* =====================================================
+           LOAD VIP REVIEWS
+        ===================================================== */
+
+        function loadVipReviews() {
+
+            const container =
+                document.getElementById(
+                    "vipReviewsList"
+                );
+
+            if (!container) return;
+
+            const reviews =
+                JSON.parse(
+                    localStorage.getItem(
+                        "dundeeReviews"
+                    )
+                ) || [];
+
+            if (reviews.length === 0) {
+
+                container.innerHTML = `
+                    <div class="home-empty">
+                        No VIP reviews yet.
+                    </div>
+                `;
+
+                return;
+            }
+
+            container.innerHTML = "";
+
+            reviews
+                .slice()
+                .reverse()
+                .slice(0, 6)
+                .forEach(function(review) {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+                    card.className =
+                        "home-review";
+
+                    const rating =
+                        Math.min(
+                            5,
+                            Math.max(
+                                1,
+                                Number(
+                                    review.rating || 5
+                                )
+                            )
+                        );
+
+                    card.innerHTML = `
+
+                        <div class="review-stars">
+                            ${
+                                "⭐".repeat(
+                                    rating
+                                )
+                            }
+                        </div>
+
+                        <div class="review-text">
+                            "${
+                                review.comment || ""
+                            }"
+                        </div>
+
+                        <div class="review-name">
+                            ${
+                                review.name ||
+                                "VIP Member"
+                            }
+                        </div>
+
+                        <div class="review-country">
+                            🌍 ${
+                                review.country || ""
+                            }
+                        </div>
+
+                    `;
+
+                    container.appendChild(card);
+
+                });
+
+        }
+
+
+        /* =====================================================
+           MOBILE MENU
+        ===================================================== */
+
+        const menuButton =
+            document.getElementById(
+                "topMenuButton"
+            );
+
+        const navbar =
+            document.getElementById(
+                "topNavbar"
+            );
+
+        if (menuButton && navbar) {
+
+            menuButton.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    navbar.classList.toggle(
+                        "active"
+                    );
+
+                }
+            );
+
+            navbar.querySelectorAll("a").forEach(
+                function(link) {
+
+                    link.addEventListener(
+                        "click",
+                        function() {
+
+                            navbar.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           INITIAL LOAD
+        ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                loadHomeFreeTips();
+
+                loadHomeResults();
+
+                loadVipReviews();
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

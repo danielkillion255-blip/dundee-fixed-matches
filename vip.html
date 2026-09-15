@@ -1,0 +1,4249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VIP Tips - Dundee Fixed Matches</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* =====================================================
+   VIP MATCHES
+===================================================== */
+
+.vip-matches {
+    width: 100%;
+    margin: 30px auto 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.vip-match-card {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            145deg,
+            #181818 0%,
+            #0d0d0d 55%,
+            #111 100%
+        );
+    border: 1px solid #2d2d2d;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 10px 35px rgba(0,0,0,.35);
+    transition: .3s ease;
+}
+
+.vip-match-card:hover {
+    transform: translateY(-5px);
+    border-color: #d6b04c;
+    box-shadow: 0 15px 40px rgba(214,176,76,.12);
+}
+
+.vip-match-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #d6b04c,
+        transparent
+    );
+}
+
+.vip-match-card::after {
+    content: "VIP";
+    position: absolute;
+    top: 18px;
+    right: -31px;
+    width: 105px;
+    padding: 5px 0;
+    text-align: center;
+    background: #d6b04c;
+    color: #080808;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    transform: rotate(45deg);
+}
+
+.vip-match-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.vip-match-league {
+    color: #999;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+}
+
+.vip-match-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #242424;
+    border: 1px solid #3a3a3a;
+    color: #d6b04c;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.vip-match-date {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: #aaa;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.vip-match-date .time {
+    color: #d6b04c;
+    font-weight: 900;
+}
+
+.vip-teams {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 5px;
+}
+
+.vip-team {
+    min-width: 0;
+    text-align: center;
+}
+
+.vip-team-name {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.vip-team-label {
+    display: block;
+    margin-top: 5px;
+    color: #777;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.vip-vs {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    border: 1px solid #383838;
+    color: #d6b04c;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.vip-pick-box {
+    margin-top: 10px;
+    padding: 15px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(214,176,76,.12),
+            rgba(214,176,76,.03)
+        );
+    border: 1px solid rgba(214,176,76,.35);
+    border-radius: 11px;
+    text-align: center;
+}
+
+.vip-pick-label {
+    display: block;
+    color: #888;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    margin-bottom: 7px;
+}
+
+.vip-pick {
+    color: #d6b04c;
+    font-size: 19px;
+    font-weight: 1000;
+    text-transform: uppercase;
+}
+
+.vip-match-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.vip-match-stat {
+    background: #101010;
+    border: 1px solid #282828;
+    border-radius: 9px;
+    padding: 11px;
+    text-align: center;
+}
+
+.vip-match-stat small {
+    display: block;
+    color: #777;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .8px;
+    margin-bottom: 5px;
+}
+
+.vip-match-stat strong {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.vip-match-stat.odds strong {
+    color: #d6b04c;
+    font-size: 18px;
+}
+
+.vip-status-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.vip-match-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 82px;
+    padding: 6px 13px;
+    border-radius: 30px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .8px;
+}
+
+.vip-match-status.pending {
+    background: rgba(214,176,76,.12);
+    color: #d6b04c;
+    border: 1px solid rgba(214,176,76,.35);
+}
+
+.vip-match-status.won {
+    background: rgba(57,193,108,.12);
+    color: #39c16c;
+    border: 1px solid rgba(57,193,108,.35);
+}
+
+.vip-match-status.lost {
+    background: rgba(220,53,69,.12);
+    color: #ff5b6b;
+    border: 1px solid rgba(220,53,69,.35);
+}
+
+.vip-premium-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 15px;
+    color: #666;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.vip-premium-label span {
+    color: #d6b04c;
+}
+
+.vip-empty-card {
+    grid-column: 1 / -1;
+    padding: 45px 25px;
+    text-align: center;
+    background: #111;
+    border: 1px dashed #3a3a3a;
+    border-radius: 15px;
+}
+
+.vip-empty-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.vip-empty-card h3 {
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.vip-empty-card p {
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   VIP TICKET
+===================================================== */
+
+.vip-ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    margin: 20px 0;
+    background: #111;
+    border: 1px solid #292929;
+    border-radius: 10px;
+}
+
+.vip-ticket-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vip-ticket-brand > span {
+    font-size: 32px;
+}
+
+.vip-ticket-brand small,
+.vip-ticket-date small {
+    display: block;
+    color: #999;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.vip-ticket-brand h2 {
+    margin: 2px 0 0;
+    color: #d6b04c;
+}
+
+.vip-ticket-date {
+    text-align: right;
+}
+
+.vip-ticket-date strong {
+    display: block;
+    margin-top: 4px;
+    color: #fff;
+    font-size: 15px;
+}
+
+.ticket-info {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.ticket-info > div {
+    background: #111;
+    border: 1px solid #292929;
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.ticket-info small {
+    display: block;
+    color: #888;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.ticket-info strong {
+    display: block;
+    margin-top: 5px;
+    color: #d6b04c;
+    font-size: 16px;
+}
+
+.vip-date-selector {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.vip-date-selector label {
+    display: block;
+    margin-bottom: 8px;
+    color: #aaa;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.vip-date-selector select {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px 15px;
+    background: #111;
+    color: #fff;
+    border: 1px solid #d6b04c;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   VIP ACCESS
+===================================================== */
+
+.vip-access-form {
+    max-width: 420px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vip-access-form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 15px;
+    background: #080808;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+}
+
+.vip-access-form input:focus {
+    border-color: #d6b04c;
+}
+
+.vip-activation-message {
+    min-height: 20px;
+    margin: 12px 0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.vip-activation-message.success {
+    color: #39c16c;
+}
+
+.vip-activation-message.error {
+    color: #dc3545;
+}
+
+
+/* =====================================================
+   PUBLIC VIP RESULTS
+===================================================== */
+
+.vip-results-section {
+    padding: 80px 20px;
+    background:
+        linear-gradient(
+            180deg,
+            #0d0d0d,
+            #111
+        );
+}
+
+.vip-results-wrapper {
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+.vip-results-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 30px 0;
+}
+
+.vip-result-summary-card {
+    background: #151515;
+    border: 1px solid #292929;
+    border-radius: 10px;
+    padding: 18px 10px;
+    text-align: center;
+}
+
+.vip-result-summary-card small {
+    display: block;
+    color: #777;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .8px;
+}
+
+.vip-result-summary-card strong {
+    display: block;
+    margin-top: 7px;
+    color: #d6b04c;
+    font-size: 22px;
+}
+
+.vip-result-summary-card.won strong {
+    color: #39c16c;
+}
+
+.vip-result-summary-card.lost strong {
+    color: #ff5b6b;
+}
+
+.vip-results-filter {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.vip-results-filter select {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px 15px;
+    background: #111;
+    color: #fff;
+    border: 1px solid #d6b04c;
+    border-radius: 6px;
+    outline: none;
+}
+
+.vip-results-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.vip-result-card {
+    position: relative;
+    background: #151515;
+    border: 1px solid #292929;
+    border-radius: 14px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.vip-result-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.vip-result-card.result-won {
+    border-color: rgba(57,193,108,.28);
+}
+
+.vip-result-card.result-won::before {
+    background: #39c16c;
+}
+
+.vip-result-card.result-lost {
+    border-color: rgba(255,91,107,.28);
+}
+
+.vip-result-card.result-lost::before {
+    background: #ff5b6b;
+}
+
+.vip-result-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.vip-result-league {
+    color: #999;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.vip-result-date {
+    color: #d6b04c;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.vip-result-teams {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 0;
+}
+
+.vip-result-team {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.vip-result-vs {
+    color: #777;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.vip-result-prediction {
+    background: #0d0d0d;
+    border: 1px solid #292929;
+    border-radius: 9px;
+    padding: 12px;
+    text-align: center;
+}
+
+.vip-result-prediction small {
+    display: block;
+    color: #777;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.vip-result-prediction strong {
+    color: #d6b04c;
+    font-size: 17px;
+}
+
+.vip-result-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.vip-result-stat {
+    background: #101010;
+    border: 1px solid #252525;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.vip-result-stat small {
+    display: block;
+    color: #777;
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.vip-result-stat strong {
+    display: block;
+    margin-top: 4px;
+    color: #fff;
+    font-size: 15px;
+}
+
+.vip-result-status {
+    margin-top: 13px;
+    text-align: center;
+}
+
+.vip-result-status span {
+    display: inline-block;
+    padding: 6px 15px;
+    border-radius: 30px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .8px;
+}
+
+.vip-result-status .won {
+    color: #39c16c;
+    background: rgba(57,193,108,.1);
+    border: 1px solid rgba(57,193,108,.3);
+}
+
+.vip-result-status .lost {
+    color: #ff5b6b;
+    background: rgba(255,91,107,.1);
+    border: 1px solid rgba(255,91,107,.3);
+}
+
+.vip-results-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #888;
+}
+
+.vip-results-empty {
+    grid-column: 1 / -1;
+    background: #111;
+    border: 1px dashed #3a3a3a;
+    border-radius: 14px;
+    padding: 45px 20px;
+    text-align: center;
+}
+
+.vip-results-empty .icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.vip-results-empty h3 {
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.vip-results-empty p {
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   PAYMENT
+===================================================== */
+
+.payment-section {
+    padding: 80px 20px;
+    background: #0b0b0b;
+}
+
+.payment-grid {
+    max-width: 1100px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.payment-card {
+    background: #111;
+    border: 1px solid #292929;
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: .3s;
+}
+
+.payment-card:hover {
+    transform: translateY(-5px);
+    border-color: #d6b04c;
+}
+
+.payment-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #1b1b1b;
+    border: 2px solid #d6b04c;
+    color: #d6b04c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.payment-card h3 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.payment-card p {
+    color: #999;
+    font-size: 14px;
+    min-height: 42px;
+}
+
+.payment-btn {
+    margin-top: 15px;
+    padding: 12px 18px;
+    background: #d6b04c;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.payment-instructions {
+    max-width: 700px;
+    margin: 40px auto 0;
+    background: #111;
+    border: 1px solid #d6b04c;
+    border-radius: 10px;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.payment-instruction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d6b04c;
+    font-weight: 900;
+    margin-bottom: 25px;
+}
+
+.payment-instruction-header button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#paymentContent {
+    color: #ddd;
+    line-height: 1.7;
+}
+
+#paymentContent h3 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+#paymentContent strong {
+    color: #d6b04c;
+}
+
+.payment-address {
+    margin: 20px 0;
+    padding: 15px;
+    background: #080808;
+    border: 1px dashed #d6b04c;
+    border-radius: 6px;
+    color: #d6b04c;
+    font-weight: 800;
+    word-break: break-all;
+}
+
+.payment-address-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.payment-address-row span {
+    flex: 1;
+}
+
+.copy-payment-btn {
+    flex-shrink: 0;
+    background: #d6b04c;
+    color: #000;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 5px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.payment-warning {
+    margin-top: 15px;
+    padding: 12px;
+    background: #17120a;
+    border-left: 3px solid #d6b04c;
+    color: #aaa;
+    font-size: 13px;
+}
+
+.payment-qr {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.payment-qr #usdtQrCode,
+.payment-qr #btcQrCode {
+    display: table;
+    margin: 0 auto;
+    padding: 12px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .vip-matches {
+        grid-template-columns: 1fr;
+    }
+
+    .ticket-info {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .payment-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vip-results-list {
+        grid-template-columns: 1fr;
+    }
+
+    .vip-results-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .vip-matches {
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .vip-match-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .vip-team-name {
+        font-size: 14px;
+    }
+
+    .vip-pick {
+        font-size: 17px;
+    }
+
+    .vip-vs {
+        width: 36px;
+        height: 36px;
+        font-size: 9px;
+    }
+
+    .ticket-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .payment-section {
+        padding: 60px 15px;
+    }
+
+    .payment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-instructions {
+        padding: 20px;
+    }
+
+    .payment-address-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .copy-payment-btn {
+        width: 100%;
+    }
+
+    .vip-ticket-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .vip-ticket-date {
+        text-align: left;
+    }
+
+    .vip-results-section {
+        padding: 60px 15px;
+    }
+
+    .vip-results-summary {
+        gap: 8px;
+    }
+
+    .vip-result-summary-card {
+        padding: 15px 8px;
+    }
+
+    .vip-result-summary-card strong {
+        font-size: 19px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+    <div class="logo">
+        ⚽ DUNDEE<span>FIXED MATCHES</span>
+    </div>
+
+    <nav class="navbar">
+
+        <a href="index.html">Home</a>
+        <a href="fixed-matches.html">Fixed Matches</a>
+        <a href="free-tips.html">Free Tips</a>
+        <a href="vip.html">VIP Tips</a>
+        <a href="results.html">Results</a>
+        <a href="contact.html">Contact</a>
+
+    </nav>
+
+    <button
+        type="button"
+        class="menu-btn"
+        id="vipMenuBtn"
+    >
+        ☰
+    </button>
+
+</header>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="vip-hero">
+
+    <div class="vip-hero-content">
+
+        <p class="small-title">
+            PREMIUM FOOTBALL PREDICTIONS
+        </p>
+
+        <h1>
+            DUNDEE
+            <span>VIP TIPS</span>
+        </h1>
+
+        <p>
+            Premium selections, match analysis and
+            exclusive football predictions.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a
+                href="#vip-ticket"
+                class="btn primary-btn"
+            >
+                VIEW VIP TICKET
+            </a>
+
+            <a
+                href="contact.html"
+                class="btn secondary-btn"
+            >
+                CONTACT US
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     VIP TICKET
+===================================================== -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <p>PREMIUM ACCESS</p>
+
+        <h2>
+            ⭐ Today's VIP Ticket
+        </h2>
+
+    </div>
+
+
+    <div
+        class="vip-ticket"
+        id="vip-ticket"
+    >
+
+        <div class="vip-ticket-top">
+
+            <div>
+
+                <span class="ticket-label">
+                    DUNDEE VIP
+                </span>
+
+                <h2>
+                    PREMIUM TICKET
+                </h2>
+
+                <p class="ticket-subtitle">
+                    Exclusive daily selections
+                </p>
+
+            </div>
+
+            <div class="vip-star">
+                ⭐
+            </div>
+
+        </div>
+
+
+        <div class="vip-ticket-header">
+
+            <div class="vip-ticket-brand">
+
+                <span>⚽</span>
+
+                <div>
+
+                    <small>DUNDEE</small>
+
+                    <h2>VIP TICKET</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="vip-ticket-date">
+
+                <small>SELECTED DATE</small>
+
+                <strong id="vipTicketHeaderDate">
+                    --
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="ticket-info">
+
+            <div>
+                <small>DATE</small>
+                <strong id="vipDate">--</strong>
+            </div>
+
+            <div>
+                <small>MATCHES</small>
+                <strong id="vipMatchCount">0</strong>
+            </div>
+
+            <div>
+                <small>TOTAL ODDS</small>
+                <strong id="vipTotalOdds">0.00</strong>
+            </div>
+
+            <div>
+                <small>WON</small>
+                <strong id="vipWon">0</strong>
+            </div>
+
+            <div>
+                <small>LOST</small>
+                <strong id="vipLost">0</strong>
+            </div>
+
+            <div>
+                <small>PENDING</small>
+                <strong id="vipPending">0</strong>
+            </div>
+
+        </div>
+
+
+        <div class="vip-date-selector">
+
+            <label for="vipDateSelect">
+                SELECT VIP DATE
+            </label>
+
+            <select id="vipDateSelect">
+
+                <option value="">
+                    Loading dates...
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- VIP LOCK -->
+
+        <div
+            class="vip-lock-box"
+            id="vipLockBox"
+        >
+
+            <div class="vip-lock-icon">
+                🔒
+            </div>
+
+            <h2>
+                VIP TIPS LOCKED
+            </h2>
+
+            <p>
+                Premium football selections are available
+                to VIP members only.
+            </p>
+
+            <div class="vip-lock-price">
+                $100 VIP ACCESS
+            </div>
+
+            <p>
+                Already purchased your VIP access code?
+            </p>
+
+            <div class="vip-access-form">
+
+                <input
+                    type="text"
+                    id="vipCustomerName"
+                    placeholder="Enter your name"
+                    autocomplete="name"
+                >
+
+                <input
+                    type="text"
+                    id="vipAccessCodeInput"
+                    placeholder="Enter your VIP code"
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    class="vip-lock-btn"
+                    id="activateVipButton"
+                >
+                    🔐 ACTIVATE VIP ACCESS
+                </button>
+
+            </div>
+
+            <p
+                id="vipActivationMessage"
+                class="vip-activation-message"
+            ></p>
+
+            <p>
+                Don't have a VIP code yet?
+            </p>
+
+            <a
+                href="https://wa.me/255759970800?text=Hello%20Dundee%20Fixed%20Matches,%20I%20want%20to%20purchase%20the%20%24100%20VIP%20Ticket."
+                class="vip-lock-btn"
+                target="_blank"
+                rel="noopener"
+            >
+                GET VIP ACCESS
+            </a>
+
+        </div>
+
+
+        <!-- PREMIUM VIP MATCHES -->
+
+        <div
+            class="vip-matches"
+            id="adminVipMatches"
+            style="display:none;"
+        >
+
+            <div class="vip-empty-card">
+
+                <div class="vip-empty-icon">
+                    ⚽
+                </div>
+
+                <h3>
+                    Loading VIP selections...
+                </h3>
+
+                <p>
+                    Please wait while we prepare today's premium ticket.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="vip-price">
+
+            <small>
+                TODAY'S VIP ACCESS
+            </small>
+
+            <h3 id="vipPrice">
+                $100 USD
+            </h3>
+
+            <p>
+                Get today's premium ticket through
+                our international payment options.
+            </p>
+
+        </div>
+
+
+        <a
+            href="https://wa.me/255759970800?text=Hello%20Dundee%20Fixed%20Matches,%20I%20want%20to%20purchase%20the%20%24100%20VIP%20Ticket."
+            class="btn vip-buy-btn"
+            target="_blank"
+            rel="noopener"
+        >
+            🔐 GET VIP TICKET
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PUBLIC VIP RESULTS
+===================================================== -->
+
+<section
+    class="vip-results-section"
+    id="vip-results"
+>
+
+    <div class="vip-results-wrapper">
+
+        <div class="section-title">
+
+            <p>PUBLIC HISTORY</p>
+
+            <h2>
+                🏆 VIP Results
+            </h2>
+
+            <p>
+                Previous VIP selections and their final results.
+                Results are available publicly after the matches are completed.
+            </p>
+
+        </div>
+
+
+        <div class="vip-results-summary">
+
+            <div class="vip-result-summary-card">
+
+                <small>
+                    TOTAL MATCHES
+                </small>
+
+                <strong id="publicTotalMatches">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="vip-result-summary-card won">
+
+                <small>
+                    WON
+                </small>
+
+                <strong id="publicTotalWon">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="vip-result-summary-card lost">
+
+                <small>
+                    LOST
+                </small>
+
+                <strong id="publicTotalLost">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="vip-result-summary-card">
+
+                <small>
+                    WIN RATE
+                </small>
+
+                <strong id="publicWinRate">
+                    0%
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="vip-results-filter">
+
+            <select id="publicResultsDateSelect">
+
+                <option value="all">
+                    ALL PREVIOUS RESULTS
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            class="vip-results-list"
+            id="publicVipResults"
+        >
+
+            <div class="vip-results-loading">
+
+                Loading VIP results...
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PAYMENT METHODS
+===================================================== -->
+
+<section
+    class="payment-section"
+    id="payment-section"
+>
+
+    <div class="section-title">
+
+        <p>INTERNATIONAL PAYMENTS</p>
+
+        <h2>
+            💳 Choose Your Payment Method
+        </h2>
+
+        <p>
+            VIP Access Price:
+            <strong>$100 USD</strong>
+        </p>
+
+    </div>
+
+
+    <div class="payment-grid">
+
+        <div class="payment-card">
+
+            <div class="payment-icon">₿</div>
+
+            <h3>Bitcoin</h3>
+
+            <p>
+                Pay securely using Bitcoin (BTC).
+            </p>
+
+            <button
+                type="button"
+                class="payment-btn"
+                onclick="showPayment('bitcoin')"
+            >
+                PAY WITH BITCOIN
+            </button>
+
+        </div>
+
+
+        <div class="payment-card">
+
+            <div class="payment-icon">₮</div>
+
+            <h3>USDT</h3>
+
+            <p>
+                Pay using USDT on the supported network.
+            </p>
+
+            <button
+                type="button"
+                class="payment-btn"
+                onclick="showPayment('usdt')"
+            >
+                PAY WITH USDT
+            </button>
+
+        </div>
+
+
+        <div class="payment-card">
+
+            <div class="payment-icon">🌍</div>
+
+            <h3>Ria Money Transfer</h3>
+
+            <p>
+                International money transfer option.
+            </p>
+
+            <button
+                type="button"
+                class="payment-btn"
+                onclick="showPayment('ria')"
+            >
+                PAY WITH RIA
+            </button>
+
+        </div>
+
+
+        <div class="payment-card">
+
+            <div class="payment-icon">📱</div>
+
+            <h3>Safaricom M-PESA</h3>
+
+            <p>
+                Payment option for customers using
+                Kenya M-PESA.
+            </p>
+
+            <button
+                type="button"
+                class="payment-btn"
+                onclick="showPayment('mpesa')"
+            >
+                PAY WITH M-PESA
+            </button>
+
+        </div>
+
+
+        <div class="payment-card">
+
+            <div class="payment-icon">🏦</div>
+
+            <h3>Bank Transfer</h3>
+
+            <p>
+                International bank payment option.
+            </p>
+
+            <button
+                type="button"
+                class="payment-btn"
+                onclick="showPayment('bank')"
+            >
+                BANK TRANSFER
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="payment-instructions"
+        id="paymentInstructions"
+        style="display:none;"
+    >
+
+        <div class="payment-instruction-header">
+
+            <span>
+                🔐 PAYMENT INSTRUCTIONS
+            </span>
+
+            <button
+                type="button"
+                onclick="closePayment()"
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <div id="paymentContent"></div>
+
+        <button
+            type="button"
+            class="btn vip-buy-btn"
+            onclick="confirmPayment()"
+        >
+            ✅ I HAVE PAID — CONTACT WHATSAPP
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     WHY VIP
+===================================================== -->
+
+<section class="vip-benefits">
+
+    <div class="section-title">
+
+        <p>VIP MEMBERS</p>
+
+        <h2>
+            Why Choose VIP?
+        </h2>
+
+    </div>
+
+
+    <div class="benefits-grid">
+
+        <div class="benefit-card">
+
+            <div class="benefit-icon">🎯</div>
+
+            <h3>
+                Premium Selections
+            </h3>
+
+            <p>
+                Carefully selected matches based on
+                our football prediction strategy.
+            </p>
+
+        </div>
+
+
+        <div class="benefit-card">
+
+            <div class="benefit-icon">📊</div>
+
+            <h3>
+                Match Analysis
+            </h3>
+
+            <p>
+                Get additional information and
+                analysis behind selected matches.
+            </p>
+
+        </div>
+
+
+        <div class="benefit-card">
+
+            <div class="benefit-icon">⚡</div>
+
+            <h3>
+                Daily Updates
+            </h3>
+
+            <p>
+                New VIP selections are prepared
+                for upcoming football matches.
+            </p>
+
+        </div>
+
+
+        <div class="benefit-card">
+
+            <div class="benefit-icon">📱</div>
+
+            <h3>
+                Easy Access
+            </h3>
+
+            <p>
+                Receive your VIP ticket directly
+                through our WhatsApp channel.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CTA
+===================================================== -->
+
+<section class="free-vip-box">
+
+    <div class="premium-content">
+
+        <p class="small-title">
+            READY FOR VIP?
+        </p>
+
+        <h2>
+            ⭐ GET TODAY'S VIP TICKET
+        </h2>
+
+        <p>
+            Choose your preferred international
+            payment method to access today's VIP ticket.
+        </p>
+
+        <a
+            href="#payment-section"
+            class="btn vip-btn"
+        >
+            🔐 VIEW PAYMENT OPTIONS
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DISCLAIMER
+===================================================== -->
+
+<section class="disclaimer">
+
+    <h3>
+        ⚠️ Responsible Betting
+    </h3>
+
+    <p>
+        Football predictions involve uncertainty and
+        no prediction can guarantee a particular result.
+        Use predictions responsibly and only stake money
+        you can afford to lose.
+    </p>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+    <div class="logo">
+        ⚽ DUNDEE<span>FIXED MATCHES</span>
+    </div>
+
+    <p>
+        Daily football predictions and match analysis.
+    </p>
+
+    <div class="social-links">
+
+        <a href="#">
+            Telegram
+        </a>
+
+        <a
+            href="https://wa.me/255759970800"
+            target="_blank"
+            rel="noopener"
+        >
+            WhatsApp
+        </a>
+
+        <a href="#">
+            Facebook
+        </a>
+
+    </div>
+
+    <p class="copyright">
+        © 2026 Dundee Fixed Matches.
+        All Rights Reserved.
+    </p>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+    "https://pgvesfuzeonhyfzhshas.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_e4pxjOJc8dZ8sYlOhq15Ng_6Xn3nQ8p";
+
+let supabaseClient = null;
+
+if (
+    window.supabase &&
+    typeof window.supabase.createClient === "function"
+) {
+
+    supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+}
+
+
+/* =====================================================
+   VIP PRICE
+===================================================== */
+
+const VIP_PRICE = 100;
+const VIP_CURRENCY = "USD";
+
+
+/* =====================================================
+   PAYMENT DETAILS
+===================================================== */
+
+const PAYMENT_DETAILS = {
+
+    bitcoin: {
+        name: "Bitcoin (BTC)",
+        address: "16WjnaU8LKN8eirD4jWacWd1jNmWb2FB4v"
+    },
+
+    usdt: {
+        name: "USDT",
+        network: "TRC20",
+        address: "TJfdxUmFqwHw3zKdvpiQDVLaZjf5xmAZ2T"
+    },
+
+    ria: {
+        name: "Ria Money Transfer",
+        details: "CONTACT US FOR RIA TRANSFER DETAILS"
+    },
+
+    mpesa: {
+        name: "Safaricom M-PESA",
+        number: "YOUR SAFARICOM M-PESA NUMBER"
+    },
+
+    bank: {
+        name: "International Bank Transfer",
+        details: "CONTACT US FOR BANK TRANSFER DETAILS"
+    }
+
+};
+
+let selectedPaymentMethod = "";
+
+
+/* =====================================================
+   LOCAL DATE
+   Tanzania/browser local date
+===================================================== */
+
+function getLocalDateString() {
+
+    const d = new Date();
+
+    const year =
+        d.getFullYear();
+
+    const month =
+        String(
+            d.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            d.getDate()
+        ).padStart(2, "0");
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/* =====================================================
+   MOBILE MENU
+===================================================== */
+
+const vipMenuBtn =
+    document.getElementById(
+        "vipMenuBtn"
+    );
+
+const vipNavbar =
+    document.querySelector(
+        ".navbar"
+    );
+
+if (
+    vipMenuBtn &&
+    vipNavbar
+) {
+
+    vipMenuBtn.addEventListener(
+        "click",
+        function () {
+
+            vipNavbar.classList.toggle(
+                "active"
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatVipDate(date) {
+
+    if (!date) {
+        return "--";
+    }
+
+    const dateObject =
+        new Date(
+            date + "T00:00:00"
+        );
+
+    return dateObject.toLocaleDateString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    ).toUpperCase();
+
+}
+
+
+/* =====================================================
+   ACTIVATE VIP CODE
+===================================================== */
+
+async function activateVipCode() {
+
+    const nameInput =
+        document.getElementById(
+            "vipCustomerName"
+        );
+
+    const codeInput =
+        document.getElementById(
+            "vipAccessCodeInput"
+        );
+
+    const message =
+        document.getElementById(
+            "vipActivationMessage"
+        );
+
+    const button =
+        document.getElementById(
+            "activateVipButton"
+        );
+
+    const lockBox =
+        document.getElementById(
+            "vipLockBox"
+        );
+
+    const vipMatches =
+        document.getElementById(
+            "adminVipMatches"
+        );
+
+
+    const customerName =
+        nameInput.value.trim();
+
+    const code =
+        codeInput.value
+            .trim()
+            .toUpperCase();
+
+
+    if (!customerName) {
+
+        message.className =
+            "vip-activation-message error";
+
+        message.textContent =
+            "Please enter your name.";
+
+        return;
+
+    }
+
+
+    if (!code) {
+
+        message.className =
+            "vip-activation-message error";
+
+        message.textContent =
+            "Please enter your VIP code.";
+
+        return;
+
+    }
+
+
+    if (!supabaseClient) {
+
+        message.className =
+            "vip-activation-message error";
+
+        message.textContent =
+            "VIP system is currently unavailable.";
+
+        return;
+
+    }
+
+
+    message.className =
+        "vip-activation-message";
+
+    message.textContent =
+        "Checking VIP code...";
+
+
+    button.disabled = true;
+    button.textContent = "CHECKING...";
+
+
+    try {
+
+        const result =
+            await supabaseClient.rpc(
+                "activate_vip_code",
+                {
+                    p_code: code,
+                    p_customer_name: customerName
+                }
+            );
+
+
+        const data =
+            result.data;
+
+        const error =
+            result.error;
+
+
+        if (error) {
+
+            console.error(
+                "VIP ACTIVATION ERROR:",
+                error
+            );
+
+            message.className =
+                "vip-activation-message error";
+
+            message.textContent =
+                "Unable to verify VIP code. Please try again.";
+
+            return;
+
+        }
+
+
+        if (
+            !data ||
+            data.success !== true
+        ) {
+
+            message.className =
+                "vip-activation-message error";
+
+            message.textContent =
+                data && data.message
+                    ? data.message
+                    : "Invalid VIP code.";
+
+            return;
+
+        }
+
+
+        sessionStorage.setItem(
+            "dundeeVipUnlocked",
+            "true"
+        );
+
+        sessionStorage.setItem(
+            "dundeeVipCustomer",
+            customerName
+        );
+
+        sessionStorage.setItem(
+            "dundeeVipCustomerId",
+            String(
+                data.customer_id || ""
+            )
+        );
+
+        sessionStorage.setItem(
+            "dundeeVipCode",
+            code
+        );
+
+
+        message.className =
+            "vip-activation-message success";
+
+        message.textContent =
+            "VIP access activated successfully.";
+
+
+        if (lockBox) {
+
+            lockBox.style.display =
+                "none";
+
+        }
+
+
+        if (vipMatches) {
+
+            vipMatches.style.display =
+                "grid";
+
+        }
+
+
+        loadVipDates();
+
+        displayAdminVipTips();
+
+        updateVipTicketInfo();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "VIP ACTIVATION EXCEPTION:",
+            error
+        );
+
+        message.className =
+            "vip-activation-message error";
+
+        message.textContent =
+            "Something went wrong. Please try again.";
+
+    }
+
+    finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            "🔐 ACTIVATE VIP ACCESS";
+
+    }
+
+}
+
+
+const activateButton =
+    document.getElementById(
+        "activateVipButton"
+    );
+
+if (activateButton) {
+
+    activateButton.addEventListener(
+        "click",
+        activateVipCode
+    );
+
+}
+
+
+/* =====================================================
+   CHECK VIP SESSION
+===================================================== */
+
+function checkVipSession() {
+
+    const unlocked =
+        sessionStorage.getItem(
+            "dundeeVipUnlocked"
+        );
+
+
+    const lockBox =
+        document.getElementById(
+            "vipLockBox"
+        );
+
+    const vipMatches =
+        document.getElementById(
+            "adminVipMatches"
+        );
+
+
+    if (
+        unlocked === "true"
+    ) {
+
+        if (lockBox) {
+
+            lockBox.style.display =
+                "none";
+
+        }
+
+        if (vipMatches) {
+
+            vipMatches.style.display =
+                "grid";
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   DISPLAY CURRENT VIP TIPS
+===================================================== */
+
+function displayAdminVipTips(
+    selectedDate = null
+) {
+
+    const storedTips =
+        JSON.parse(
+            localStorage.getItem(
+                "dundeeTips"
+            )
+        ) || [];
+
+
+    const vipTips =
+        storedTips.filter(
+            function (tip) {
+
+                return (
+                    tip.type === "vip" &&
+                    tip.date
+                );
+
+            }
+        );
+
+
+    const container =
+        document.getElementById(
+            "adminVipMatches"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    if (vipTips.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="vip-empty-card">
+
+                <div class="vip-empty-icon">
+                    🔐
+                </div>
+
+                <h3>
+                    No VIP selections available
+                </h3>
+
+                <p>
+                    Premium selections will appear here
+                    when today's VIP ticket is published.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    if (!selectedDate) {
+
+        const today =
+            getLocalDateString();
+
+
+        const todayTips =
+            vipTips.filter(
+                function (tip) {
+
+                    return (
+                        tip.date === today
+                    );
+
+                }
+            );
+
+
+        if (
+            todayTips.length > 0
+        ) {
+
+            selectedDate =
+                today;
+
+        }
+
+        else {
+
+            const futureDates =
+                vipTips
+                    .map(
+                        function (tip) {
+                            return tip.date;
+                        }
+                    )
+                    .filter(
+                        function (date) {
+                            return date >= today;
+                        }
+                    )
+                    .sort();
+
+
+            if (
+                futureDates.length > 0
+            ) {
+
+                selectedDate =
+                    futureDates[0];
+
+            }
+
+            else {
+
+                const sortedDates =
+                    vipTips
+                        .map(
+                            function (tip) {
+                                return tip.date;
+                            }
+                        )
+                        .sort(
+                            function (a, b) {
+                                return (
+                                    new Date(b) -
+                                    new Date(a)
+                                );
+                            }
+                        );
+
+                selectedDate =
+                    sortedDates[0];
+
+            }
+
+        }
+
+    }
+
+
+    const selectedVipTips =
+        vipTips.filter(
+            function (tip) {
+
+                return (
+                    tip.date === selectedDate
+                );
+
+            }
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (
+        selectedVipTips.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="vip-empty-card">
+
+                <div class="vip-empty-icon">
+                    📅
+                </div>
+
+                <h3>
+                    No VIP selections for this date
+                </h3>
+
+                <p>
+                    Select another VIP date to view available matches.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    selectedVipTips.forEach(
+        function (tip, index) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "vip-match-card";
+
+
+            const status =
+                tip.result ||
+                "pending";
+
+
+            let statusText =
+                "PENDING";
+
+
+            if (
+                status === "won"
+            ) {
+
+                statusText =
+                    "WON";
+
+            }
+
+
+            if (
+                status === "lost"
+            ) {
+
+                statusText =
+                    "LOST";
+
+            }
+
+
+            const league =
+                tip.league ||
+                "PREMIUM FOOTBALL";
+
+
+            const matchTime =
+                tip.time ||
+                tip.matchTime ||
+                "--";
+
+
+            const homeTeam =
+                tip.home ||
+                tip.homeTeam ||
+                "Home Team";
+
+
+            const awayTeam =
+                tip.away ||
+                tip.awayTeam ||
+                "Away Team";
+
+
+            const prediction =
+                tip.prediction ||
+                "--";
+
+
+            const odds =
+                tip.odds ||
+                "--";
+
+
+            card.innerHTML = `
+
+                <div class="vip-match-top">
+
+                    <div class="vip-match-league">
+                        🏆 ${league}
+                    </div>
+
+                    <div class="vip-match-number">
+                        ${String(index + 1).padStart(2, "0")}
+                    </div>
+
+                </div>
+
+
+                <div class="vip-match-date">
+
+                    <span>
+                        📅 ${formatVipDate(selectedDate)}
+                    </span>
+
+                    <span>•</span>
+
+                    <span class="time">
+                        ⏰ ${matchTime}
+                    </span>
+
+                </div>
+
+
+                <div class="vip-teams">
+
+                    <div class="vip-team">
+
+                        <div class="vip-team-name">
+                            ${homeTeam}
+                        </div>
+
+                        <span class="vip-team-label">
+                            HOME
+                        </span>
+
+                    </div>
+
+
+                    <div class="vip-vs">
+                        VS
+                    </div>
+
+
+                    <div class="vip-team">
+
+                        <div class="vip-team-name">
+                            ${awayTeam}
+                        </div>
+
+                        <span class="vip-team-label">
+                            AWAY
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="vip-pick-box">
+
+                    <span class="vip-pick-label">
+                        ⭐ VIP PREDICTION
+                    </span>
+
+                    <div class="vip-pick">
+                        ${prediction}
+                    </div>
+
+                </div>
+
+
+                <div class="vip-match-bottom">
+
+                    <div class="vip-match-stat odds">
+
+                        <small>
+                            ODDS
+                        </small>
+
+                        <strong>
+                            ${odds}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="vip-match-stat">
+
+                        <small>
+                            CONFIDENCE
+                        </small>
+
+                        <strong>
+                            VIP PICK
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="vip-status-row">
+
+                    <span
+                        class="vip-match-status ${status}"
+                    >
+                        ${statusText}
+                    </span>
+
+                </div>
+
+
+                <div class="vip-premium-label">
+
+                    <span>◆</span>
+                    DUNDEE PREMIUM SELECTION
+                    <span>◆</span>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   UPDATE VIP TICKET
+===================================================== */
+
+function updateVipTicketInfo(
+    selectedDate = null
+) {
+
+    const storedTips =
+        JSON.parse(
+            localStorage.getItem(
+                "dundeeTips"
+            )
+        ) || [];
+
+
+    const vipTips =
+        storedTips.filter(
+            function (tip) {
+
+                return (
+                    tip.type === "vip" &&
+                    tip.date
+                );
+
+            }
+        );
+
+
+    const dateElement =
+        document.getElementById(
+            "vipDate"
+        );
+
+    const countElement =
+        document.getElementById(
+            "vipMatchCount"
+        );
+
+    const oddsElement =
+        document.getElementById(
+            "vipTotalOdds"
+        );
+
+    const wonElement =
+        document.getElementById(
+            "vipWon"
+        );
+
+    const lostElement =
+        document.getElementById(
+            "vipLost"
+        );
+
+    const pendingElement =
+        document.getElementById(
+            "vipPending"
+        );
+
+
+    if (!dateElement) {
+        return;
+    }
+
+
+    if (
+        vipTips.length === 0
+    ) {
+
+        dateElement.textContent = "--";
+        countElement.textContent = "0";
+        oddsElement.textContent = "0.00";
+        wonElement.textContent = "0";
+        lostElement.textContent = "0";
+        pendingElement.textContent = "0";
+
+        return;
+
+    }
+
+
+    if (!selectedDate) {
+
+        const today =
+            getLocalDateString();
+
+
+        const todayTips =
+            vipTips.filter(
+                function (tip) {
+
+                    return (
+                        tip.date === today
+                    );
+
+                }
+            );
+
+
+        if (
+            todayTips.length > 0
+        ) {
+
+            selectedDate =
+                today;
+
+        }
+
+        else {
+
+            const dates =
+                vipTips
+                    .map(
+                        function (tip) {
+                            return tip.date;
+                        }
+                    )
+                    .sort(
+                        function (a, b) {
+                            return (
+                                new Date(b) -
+                                new Date(a)
+                            );
+                        }
+                    );
+
+            selectedDate =
+                dates[0];
+
+        }
+
+    }
+
+
+    const selectedVipTips =
+        vipTips.filter(
+            function (tip) {
+
+                return (
+                    tip.date === selectedDate
+                );
+
+            }
+        );
+
+
+    countElement.textContent =
+        selectedVipTips.length;
+
+
+    let totalOdds = 1;
+
+
+    selectedVipTips.forEach(
+        function (tip) {
+
+            const odd =
+                parseFloat(
+                    tip.odds
+                );
+
+
+            if (
+                !isNaN(odd)
+            ) {
+
+                totalOdds =
+                    totalOdds * odd;
+
+            }
+
+        }
+    );
+
+
+    oddsElement.textContent =
+        totalOdds.toFixed(2);
+
+
+    wonElement.textContent =
+        selectedVipTips.filter(
+            function (tip) {
+                return (
+                    tip.result === "won"
+                );
+            }
+        ).length;
+
+
+    lostElement.textContent =
+        selectedVipTips.filter(
+            function (tip) {
+                return (
+                    tip.result === "lost"
+                );
+            }
+        ).length;
+
+
+    pendingElement.textContent =
+        selectedVipTips.filter(
+            function (tip) {
+
+                return (
+                    !tip.result ||
+                    tip.result === "pending"
+                );
+
+            }
+        ).length;
+
+
+    const formattedDate =
+        formatVipDate(
+            selectedDate
+        );
+
+
+    dateElement.textContent =
+        formattedDate;
+
+
+    const headerDateElement =
+        document.getElementById(
+            "vipTicketHeaderDate"
+        );
+
+
+    if (
+        headerDateElement
+    ) {
+
+        headerDateElement.textContent =
+            formattedDate;
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD VIP DATES
+===================================================== */
+
+function loadVipDates() {
+
+    const select =
+        document.getElementById(
+            "vipDateSelect"
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    const storedTips =
+        JSON.parse(
+            localStorage.getItem(
+                "dundeeTips"
+            )
+        ) || [];
+
+
+    const vipDates = [
+        ...new Set(
+            storedTips
+                .filter(
+                    function (tip) {
+
+                        return (
+                            tip.type === "vip" &&
+                            tip.date
+                        );
+
+                    }
+                )
+                .map(
+                    function (tip) {
+                        return tip.date;
+                    }
+                )
+        )
+    ].sort(
+        function (a, b) {
+
+            return (
+                new Date(b) -
+                new Date(a)
+            );
+
+        }
+    );
+
+
+    select.innerHTML = "";
+
+
+    if (
+        vipDates.length === 0
+    ) {
+
+        select.innerHTML = `
+            <option value="">
+                No VIP dates available
+            </option>
+        `;
+
+        return;
+
+    }
+
+
+    vipDates.forEach(
+        function (date) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                date;
+
+
+            option.textContent =
+                formatVipDate(
+                    date
+                );
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    const currentDate =
+        getLocalDateString();
+
+
+    if (
+        vipDates.includes(
+            currentDate
+        )
+    ) {
+
+        select.value =
+            currentDate;
+
+    }
+
+    else {
+
+        select.value =
+            vipDates[0];
+
+    }
+
+}
+
+
+/* =====================================================
+   CHANGE VIP DATE
+===================================================== */
+
+function changeVipDate(
+    selectedDate
+) {
+
+    if (!selectedDate) {
+        return;
+    }
+
+
+    displayAdminVipTips(
+        selectedDate
+    );
+
+
+    updateVipTicketInfo(
+        selectedDate
+    );
+
+}
+
+
+const vipDateSelect =
+    document.getElementById(
+        "vipDateSelect"
+    );
+
+if (vipDateSelect) {
+
+    vipDateSelect.addEventListener(
+        "change",
+        function () {
+
+            changeVipDate(
+                this.value
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PUBLIC VIP RESULTS
+===================================================== */
+
+let publicVipResults =
+    [];
+
+
+/* =====================================================
+   LOAD PUBLIC RESULTS FROM SUPABASE
+===================================================== */
+
+async function loadPublicVipResults() {
+
+    const container =
+        document.getElementById(
+            "publicVipResults"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="vip-results-loading">
+
+            🔄 Loading VIP results...
+
+        </div>
+
+    `;
+
+
+    if (!supabaseClient) {
+
+        container.innerHTML = `
+
+            <div class="vip-results-empty">
+
+                <div class="icon">
+                    ⚠️
+                </div>
+
+                <h3>
+                    Results unavailable
+                </h3>
+
+                <p>
+                    Please refresh the page and try again.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const today =
+        getLocalDateString();
+
+
+    try {
+
+        const response =
+            await supabaseClient
+                .from("vip_tips")
+                .select(
+                    "id, match_date, match_time, league, home_team, away_team, prediction, odds, result"
+                )
+                .lt(
+                    "match_date",
+                    today
+                )
+                .in(
+                    "result",
+                    [
+                        "won",
+                        "lost"
+                    ]
+                )
+                .order(
+                    "match_date",
+                    {
+                        ascending: false
+                    }
+                )
+                .order(
+                    "id",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (response.error) {
+
+            console.error(
+                "PUBLIC VIP RESULTS ERROR:",
+                response.error
+            );
+
+            container.innerHTML = `
+
+                <div class="vip-results-empty">
+
+                    <div class="icon">
+                        ⚠️
+                    </div>
+
+                    <h3>
+                        Unable to load results
+                    </h3>
+
+                    <p>
+                        Please refresh the page and try again.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        publicVipResults =
+            response.data || [];
+
+
+        buildPublicResultDateFilter();
+
+        updatePublicResultSummary();
+
+        renderPublicVipResults(
+            "all"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "PUBLIC RESULTS EXCEPTION:",
+            error
+        );
+
+        container.innerHTML = `
+
+            <div class="vip-results-empty">
+
+                <div class="icon">
+                    ⚠️
+                </div>
+
+                <h3>
+                    Results unavailable
+                </h3>
+
+                <p>
+                    Please try again later.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   DATE FILTER
+===================================================== */
+
+function buildPublicResultDateFilter() {
+
+    const select =
+        document.getElementById(
+            "publicResultsDateSelect"
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    const dates = [
+        ...new Set(
+            publicVipResults.map(
+                function (item) {
+                    return item.match_date;
+                }
+            )
+        )
+    ];
+
+
+    select.innerHTML = `
+
+        <option value="all">
+            ALL PREVIOUS RESULTS
+        </option>
+
+    `;
+
+
+    dates.forEach(
+        function (date) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                date;
+
+
+            option.textContent =
+                formatVipDate(
+                    date
+                );
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   RESULT SUMMARY
+===================================================== */
+
+function updatePublicResultSummary() {
+
+    const total =
+        publicVipResults.length;
+
+
+    const won =
+        publicVipResults.filter(
+            function (item) {
+
+                return (
+                    item.result === "won"
+                );
+
+            }
+        ).length;
+
+
+    const lost =
+        publicVipResults.filter(
+            function (item) {
+
+                return (
+                    item.result === "lost"
+                );
+
+            }
+        ).length;
+
+
+    const winRate =
+        total > 0
+            ? Math.round(
+                (won / total) * 100
+            )
+            : 0;
+
+
+    const totalElement =
+        document.getElementById(
+            "publicTotalMatches"
+        );
+
+    const wonElement =
+        document.getElementById(
+            "publicTotalWon"
+        );
+
+    const lostElement =
+        document.getElementById(
+            "publicTotalLost"
+        );
+
+    const rateElement =
+        document.getElementById(
+            "publicWinRate"
+        );
+
+
+    if (totalElement) {
+        totalElement.textContent =
+            total;
+    }
+
+    if (wonElement) {
+        wonElement.textContent =
+            won;
+    }
+
+    if (lostElement) {
+        lostElement.textContent =
+            lost;
+    }
+
+    if (rateElement) {
+        rateElement.textContent =
+            winRate + "%";
+    }
+
+}
+
+
+/* =====================================================
+   RENDER PUBLIC RESULTS
+===================================================== */
+
+function renderPublicVipResults(
+    selectedDate = "all"
+) {
+
+    const container =
+        document.getElementById(
+            "publicVipResults"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    let results =
+        publicVipResults;
+
+
+    if (
+        selectedDate !== "all"
+    ) {
+
+        results =
+            publicVipResults.filter(
+                function (item) {
+
+                    return (
+                        item.match_date ===
+                        selectedDate
+                    );
+
+                }
+            );
+
+    }
+
+
+    if (
+        results.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="vip-results-empty">
+
+                <div class="icon">
+                    🏆
+                </div>
+
+                <h3>
+                    No VIP results yet
+                </h3>
+
+                <p>
+                    Completed VIP results will appear here
+                    automatically after matches are settled.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    results.forEach(
+        function (item, index) {
+
+            const result =
+                item.result === "won"
+                    ? "won"
+                    : "lost";
+
+
+            const resultText =
+                result === "won"
+                    ? "WON"
+                    : "LOST";
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "vip-result-card result-" +
+                result;
+
+
+            card.innerHTML = `
+
+                <div class="vip-result-top">
+
+                    <div class="vip-result-league">
+
+                        🏆
+                        ${escapeHtml(
+                            item.league ||
+                            "PREMIUM FOOTBALL"
+                        )}
+
+                    </div>
+
+                    <div class="vip-result-date">
+
+                        📅
+                        ${formatVipDate(
+                            item.match_date
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div class="vip-result-teams">
+
+                    <div class="vip-result-team">
+
+                        ${escapeHtml(
+                            item.home_team ||
+                            "Home Team"
+                        )}
+
+                    </div>
+
+
+                    <div class="vip-result-vs">
+                        VS
+                    </div>
+
+
+                    <div class="vip-result-team">
+
+                        ${escapeHtml(
+                            item.away_team ||
+                            "Away Team"
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div class="vip-result-prediction">
+
+                    <small>
+                        VIP PREDICTION
+                    </small>
+
+                    <strong>
+
+                        ${escapeHtml(
+                            item.prediction ||
+                            "--"
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="vip-result-bottom">
+
+                    <div class="vip-result-stat">
+
+                        <small>
+                            MATCH TIME
+                        </small>
+
+                        <strong>
+                            ${escapeHtml(
+                                item.match_time ||
+                                "--"
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="vip-result-stat">
+
+                        <small>
+                            ODDS
+                        </small>
+
+                        <strong>
+                            ${item.odds || "--"}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="vip-result-status">
+
+                    <span class="${result}">
+                        ${resultText}
+                    </span>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =====================================================
+   PUBLIC RESULTS DATE EVENT
+===================================================== */
+
+const publicResultsDateSelect =
+    document.getElementById(
+        "publicResultsDateSelect"
+    );
+
+if (
+    publicResultsDateSelect
+) {
+
+    publicResultsDateSelect.addEventListener(
+        "change",
+        function () {
+
+            renderPublicVipResults(
+                this.value
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PAYMENT
+===================================================== */
+
+function showPayment(
+    method
+) {
+
+    selectedPaymentMethod =
+        method;
+
+
+    const box =
+        document.getElementById(
+            "paymentInstructions"
+        );
+
+    const content =
+        document.getElementById(
+            "paymentContent"
+        );
+
+
+    if (
+        !box ||
+        !content
+    ) {
+        return;
+    }
+
+
+    const payment =
+        PAYMENT_DETAILS[
+            method
+        ];
+
+
+    if (!payment) {
+        return;
+    }
+
+
+    box.style.display =
+        "block";
+
+
+    if (
+        method === "bitcoin"
+    ) {
+
+        content.innerHTML = `
+
+            <h3>₿ Bitcoin Payment</h3>
+
+            <p>
+                VIP Price:
+                <strong>
+                    $${VIP_PRICE} ${VIP_CURRENCY}
+                </strong>
+            </p>
+
+            <p>
+                Send Bitcoin to the wallet address below:
+            </p>
+
+            <div class="payment-address payment-address-row">
+
+                <span id="cryptoAddress">
+                    ${payment.address}
+                </span>
+
+                <button
+                    type="button"
+                    class="copy-payment-btn"
+                    onclick="copyPaymentAddress()"
+                >
+                    COPY
+                </button>
+
+            </div>
+
+            <div class="payment-qr">
+
+                <div id="btcQrCode"></div>
+
+                <p>
+                    Scan to pay with Bitcoin
+                </p>
+
+            </div>
+
+            <div class="payment-warning">
+
+                ⚠️ Make sure you send BTC to the
+                correct Bitcoin address before confirming
+                the payment.
+
+            </div>
+
+        `;
+
+    }
+
+
+    else if (
+        method === "usdt"
+    ) {
+
+        content.innerHTML = `
+
+            <h3>₮ USDT Payment</h3>
+
+            <p>
+                VIP Price:
+                <strong>
+                    $${VIP_PRICE} ${VIP_CURRENCY}
+                </strong>
+            </p>
+
+            <p>
+                Send USDT using the network below:
+            </p>
+
+            <div class="payment-address payment-address-row">
+
+                <span id="cryptoAddress">
+                    ${payment.address}
+                </span>
+
+                <button
+                    type="button"
+                    class="copy-payment-btn"
+                    onclick="copyPaymentAddress()"
+                >
+                    COPY
+                </button>
+
+            </div>
+
+            <div class="payment-qr">
+
+                <div id="usdtQrCode"></div>
+
+                <p>
+                    Scan to pay with USDT
+                </p>
+
+            </div>
+
+            <p>
+                <strong>
+                    Network: ${payment.network}
+                </strong>
+            </p>
+
+            <div class="payment-warning">
+
+                ⚠️ Only send USDT using the specified
+                network.
+
+            </div>
+
+        `;
+
+    }
+
+
+    else if (
+        method === "ria"
+    ) {
+
+        content.innerHTML = `
+
+            <h3>🌍 Ria Money Transfer</h3>
+
+            <p>
+                VIP Price:
+                <strong>
+                    $${VIP_PRICE} ${VIP_CURRENCY}
+                </strong>
+            </p>
+
+            <div class="payment-address">
+
+                ${payment.details}
+
+            </div>
+
+            <small>
+                Contact us on WhatsApp if you need
+                assistance with the transfer.
+            </small>
+
+        `;
+
+    }
+
+
+    else if (
+        method === "mpesa"
+    ) {
+
+        content.innerHTML = `
+
+            <h3>📱 Safaricom M-PESA</h3>
+
+            <p>
+                VIP Price:
+                <strong>
+                    $${VIP_PRICE} ${VIP_CURRENCY}
+                </strong>
+            </p>
+
+            <div class="payment-address">
+
+                ${payment.number}
+
+            </div>
+
+            <small>
+                Kenya M-PESA customers.
+            </small>
+
+        `;
+
+    }
+
+
+    else if (
+        method === "bank"
+    ) {
+
+        content.innerHTML = `
+
+            <h3>🏦 International Bank Transfer</h3>
+
+            <p>
+                VIP Price:
+                <strong>
+                    $${VIP_PRICE} ${VIP_CURRENCY}
+                </strong>
+            </p>
+
+            <div class="payment-address">
+
+                ${payment.details}
+
+            </div>
+
+            <small>
+                Contact us on WhatsApp for assistance.
+            </small>
+
+        `;
+
+    }
+
+
+    if (
+        method === "bitcoin" &&
+        typeof QRCode !== "undefined"
+    ) {
+
+        const qr =
+            document.getElementById(
+                "btcQrCode"
+            );
+
+        if (qr) {
+
+            qr.innerHTML = "";
+
+            new QRCode(
+                qr,
+                {
+                    text: payment.address,
+                    width: 180,
+                    height: 180
+                }
+            );
+
+        }
+
+    }
+
+
+    if (
+        method === "usdt" &&
+        typeof QRCode !== "undefined"
+    ) {
+
+        const qr =
+            document.getElementById(
+                "usdtQrCode"
+            );
+
+        if (qr) {
+
+            qr.innerHTML = "";
+
+            new QRCode(
+                qr,
+                {
+                    text: payment.address,
+                    width: 180,
+                    height: 180
+                }
+            );
+
+        }
+
+    }
+
+
+    box.scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =====================================================
+   CLOSE PAYMENT
+===================================================== */
+
+function closePayment() {
+
+    const box =
+        document.getElementById(
+            "paymentInstructions"
+        );
+
+
+    if (box) {
+
+        box.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   COPY PAYMENT ADDRESS
+===================================================== */
+
+function copyPaymentAddress() {
+
+    const address =
+        document.getElementById(
+            "cryptoAddress"
+        );
+
+
+    if (!address) {
+        return;
+    }
+
+
+    const text =
+        address.textContent.trim();
+
+
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+
+        navigator.clipboard
+            .writeText(text)
+            .then(
+                function () {
+
+                    alert(
+                        "Payment address copied!"
+                    );
+
+                }
+            );
+
+        return;
+
+    }
+
+
+    const textArea =
+        document.createElement(
+            "textarea"
+        );
+
+
+    textArea.value =
+        text;
+
+    textArea.style.position =
+        "fixed";
+
+    textArea.style.left =
+        "-9999px";
+
+
+    document.body.appendChild(
+        textArea
+    );
+
+
+    textArea.select();
+
+
+    try {
+
+        document.execCommand(
+            "copy"
+        );
+
+        alert(
+            "Payment address copied!"
+        );
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Unable to copy. Please copy manually."
+        );
+
+    }
+
+
+    document.body.removeChild(
+        textArea
+    );
+
+}
+
+
+/* =====================================================
+   CONFIRM PAYMENT
+===================================================== */
+
+function confirmPayment() {
+
+    if (
+        !selectedPaymentMethod
+    ) {
+
+        alert(
+            "Please select a payment method first."
+        );
+
+        return;
+
+    }
+
+
+    const paymentNames = {
+
+        bitcoin: "Bitcoin (BTC)",
+        usdt: "USDT",
+        ria: "Ria Money Transfer",
+        mpesa: "Safaricom M-PESA",
+        bank: "International Bank Transfer"
+
+    };
+
+
+    const paymentName =
+        paymentNames[
+            selectedPaymentMethod
+        ];
+
+
+    const message =
+        "Hello Dundee Fixed Matches,%0A%0A" +
+        "I have paid for today's VIP ticket.%0A%0A" +
+        "Payment Method: " +
+        paymentName +
+        "%0A" +
+        "VIP Price: $" +
+        VIP_PRICE +
+        " " +
+        VIP_CURRENCY +
+        "%0A%0A" +
+        "Please verify my payment and send me the VIP ticket.";
+
+
+    const whatsappURL =
+        "https://wa.me/255759970800?text=" +
+        message;
+
+
+    window.open(
+        whatsappURL,
+        "_blank"
+    );
+
+}
+
+
+/* =====================================================
+   START PAGE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadVipDates();
+
+        displayAdminVipTips();
+
+        updateVipTicketInfo();
+
+        checkVipSession();
+
+        loadPublicVipResults();
+
+    }
+);
+
+</script>
+
+</body>
+</html>

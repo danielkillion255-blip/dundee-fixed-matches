@@ -1,0 +1,3302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Admin Dashboard - Dundee Fixed Matches</title>
+
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+<style>
+
+/* ==================================================
+   CENTER ADMIN LOGIN
+================================================== */
+
+#adminLogin {
+    min-height: 100vh;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    margin: 0;
+}
+
+#adminLogin .login-box {
+    width: 100%;
+    max-width: 430px;
+
+    margin: 0 auto;
+
+    box-sizing: border-box;
+
+    text-align: center;
+}
+
+
+/* ==================================================
+   WHEN LOGGED IN
+   LOGIN MUST COMPLETELY DISAPPEAR
+================================================== */
+
+#adminLogin[style*="display: none"] {
+    display: none !important;
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 600px) {
+
+    #adminLogin {
+        padding: 16px;
+    }
+
+    #adminLogin .login-box {
+        max-width: 100%;
+    }
+
+}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     ADMIN LOGIN
+================================================== -->
+
+<div id="adminLogin">
+
+    <div class="login-box">
+
+        <div class="login-logo">
+
+            ⚽ DUNDEE
+
+            <span>
+                FIXED MATCHES
+            </span>
+
+        </div>
+
+        <p class="login-label">
+            ADMIN ACCESS
+        </p>
+
+        <h1>
+            Admin Login
+        </h1>
+
+        <input
+            type="email"
+            id="adminEmail"
+            placeholder="Admin email"
+            autocomplete="username"
+        >
+
+        <input
+            type="password"
+            id="adminPassword"
+            placeholder="Password"
+            autocomplete="current-password"
+        >
+
+        <button
+            type="button"
+            id="loginButton"
+            onclick="adminLogin()"
+        >
+            LOGIN
+        </button>
+
+        <p
+            id="loginError"
+            class="login-error"
+        ></p>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==================================================
+     ADMIN DASHBOARD
+================================================== -->
+
+<div
+    id="adminDashboard"
+    style="display:none;"
+>
+
+
+<header class="header">
+
+    <div class="logo">
+
+        ⚽ DUNDEE
+
+        <span>
+            FIXED MATCHES
+        </span>
+
+    </div>
+
+    <div class="admin-label">
+        ADMIN DASHBOARD
+    </div>
+
+    <button
+        type="button"
+        class="admin-logout"
+        onclick="adminLogout()"
+    >
+        LOGOUT
+    </button>
+
+</header>
+
+
+
+<!-- ==================================================
+     HERO
+================================================== -->
+
+<section class="page-hero admin-hero">
+
+    <div class="page-hero-content">
+
+        <p class="small-title">
+            DUNDEE FIXED MATCHES
+        </p>
+
+        <h1>
+            ADMIN <span>DASHBOARD</span>
+        </h1>
+
+        <p>
+            Manage football tips, VIP selections and match results.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     CONTROL PANEL
+================================================== -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <p>
+            CONTROL PANEL
+        </p>
+
+        <h2>
+            ⚙️ Manage Tips
+        </h2>
+
+    </div>
+
+
+
+    <!-- ADMIN STATS -->
+
+    <div class="admin-stats">
+
+        <div class="admin-stat-card">
+
+            <span>📋</span>
+
+            <small>
+                TOTAL TIPS
+            </small>
+
+            <strong id="adminTotalTips">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <span>⭐</span>
+
+            <small>
+                VIP TIPS
+            </small>
+
+            <strong id="adminVipTips">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <span>✓</span>
+
+            <small>
+                WON
+            </small>
+
+            <strong id="adminWonTips">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="admin-stat-card">
+
+            <span>✕</span>
+
+            <small>
+                LOST
+            </small>
+
+            <strong id="adminLostTips">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         VIP TICKET SUMMARY
+    ================================================== -->
+
+    <div class="vip-ticket-summary">
+
+        <div class="vip-summary-header">
+
+            <div>
+
+                <p>
+                    VIP TICKET
+                </p>
+
+                <h2>
+                    ⭐ Today's VIP Summary
+                </h2>
+
+            </div>
+
+            <span id="adminVipTicketDate">
+                --
+            </span>
+
+        </div>
+
+
+        <div class="vip-summary-grid">
+
+            <div>
+
+                <small>
+                    MATCHES
+                </small>
+
+                <strong id="adminVipMatchCount">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <small>
+                    TOTAL ODDS
+                </small>
+
+                <strong id="adminVipTotalOdds">
+                    0.00
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <small>
+                    WON
+                </small>
+
+                <strong id="adminVipWon">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <small>
+                    LOST
+                </small>
+
+                <strong id="adminVipLost">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <small>
+                    PENDING
+                </small>
+
+                <strong id="adminVipPending">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         VIP ACCESS
+    ================================================== -->
+
+    <div class="vip-ticket-summary">
+
+        <div class="vip-summary-header">
+
+            <div>
+
+                <p>
+                    VIP ACCESS
+                </p>
+
+                <h2>
+                    🔐 Customer VIP Access
+                </h2>
+
+            </div>
+
+            <span id="vipAccessStatus">
+                READY
+            </span>
+
+        </div>
+
+
+        <div style="padding:20px;">
+
+            <p
+                style="
+                    margin-bottom:15px;
+                    color:#f1f1f1;
+                    font-size:14px;
+                    line-height:1.6;
+                    font-weight:500;
+                "
+            >
+                Generate an access code for a customer after payment is confirmed.
+            </p>
+
+
+            <button
+                type="button"
+                class="btn admin-submit"
+                onclick="generateVipAccessCode()"
+            >
+                🔑 GENERATE VIP CODE
+            </button>
+
+
+            <div
+                id="vipAccessCodeBox"
+                style="
+                    display:none;
+                    margin-top:20px;
+                "
+            >
+
+                <strong>
+                    VIP ACCESS CODE
+                </strong>
+
+
+                <div
+                    id="vipAccessCode"
+                    style="
+                        font-size:24px;
+                        font-weight:800;
+                        letter-spacing:3px;
+                        margin:10px 0;
+                    "
+                >
+                    ------
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="copyVipAccessCode()"
+                >
+                    📋 COPY CODE
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         ADD NEW TIP
+    ================================================== -->
+
+    <div class="admin-form-box">
+
+        <div class="admin-form-title">
+
+            <p>
+                ADD NEW TIP
+            </p>
+
+            <h2 id="tipFormTitle">
+                ➕ Create Football Tip
+            </h2>
+
+        </div>
+
+
+        <form id="adminTipForm">
+
+            <div class="admin-form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Match Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="tipDate"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Match Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="tipTime"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        League
+                    </label>
+
+                    <input
+                        type="text"
+                        id="tipLeague"
+                        placeholder="e.g. Premier League"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Home Team
+                    </label>
+
+                    <input
+                        type="text"
+                        id="homeTeam"
+                        placeholder="Home team"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Away Team
+                    </label>
+
+                    <input
+                        type="text"
+                        id="awayTeam"
+                        placeholder="Away team"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Prediction
+                    </label>
+
+                    <input
+                        type="text"
+                        id="tipPrediction"
+                        placeholder="e.g. HOME WIN"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Odds
+                    </label>
+
+                    <input
+                        type="number"
+                        id="tipOdds"
+                        placeholder="e.g. 1.45"
+                        step="0.01"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Tip Type
+                    </label>
+
+                    <select id="tipType">
+
+                        <option value="free">
+                            Free Tip
+                        </option>
+
+                        <option value="vip">
+                            VIP Tip
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn admin-submit"
+            >
+                ➕ ADD TIP
+            </button>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         CURRENT TIPS
+    ================================================== -->
+
+    <div class="admin-list-box">
+
+        <div class="admin-form-title">
+
+            <p>
+                CURRENT TIPS
+            </p>
+
+            <h2>
+                📋 Manage Football Tips
+            </h2>
+
+        </div>
+
+
+        <div class="admin-table">
+
+            <div class="admin-table-header">
+
+                <span>
+                    DATE
+                </span>
+
+                <span>
+                    MATCH
+                </span>
+
+                <span>
+                    TIP
+                </span>
+
+                <span>
+                    ODD
+                </span>
+
+                <span>
+                    TYPE
+                </span>
+
+                <span>
+                    RESULT
+                </span>
+
+                <span>
+                    ACTION
+                </span>
+
+            </div>
+
+
+            <div id="adminTipsList">
+
+                <div class="admin-empty">
+                    No tips added yet.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     VIP REVIEWS
+================================================== -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <p>
+            VIP REVIEWS
+        </p>
+
+        <h2>
+            💬 Add VIP Member Review
+        </h2>
+
+    </div>
+
+
+    <div class="admin-form-box">
+
+        <form id="reviewForm">
+
+            <div class="admin-form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Customer Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="reviewName"
+                        placeholder="e.g. Michael"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Country
+                    </label>
+
+                    <input
+                        type="text"
+                        id="reviewCountry"
+                        placeholder="e.g. United Kingdom"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Rating
+                    </label>
+
+                    <select id="reviewRating">
+
+                        <option value="5">
+                            ⭐⭐⭐⭐⭐
+                        </option>
+
+                        <option value="4">
+                            ⭐⭐⭐⭐
+                        </option>
+
+                        <option value="3">
+                            ⭐⭐⭐
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Amount Won (Optional)
+                    </label>
+
+                    <input
+                        type="text"
+                        id="reviewAmount"
+                        placeholder="e.g. $850"
+                    >
+
+                </div>
+
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Customer Comment
+                    </label>
+
+                    <textarea
+                        id="reviewComment"
+                        placeholder="Enter the customer's review..."
+                        required
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn admin-submit"
+            >
+                ➕ ADD REVIEW
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     ADMIN NOTICE
+================================================== -->
+
+<section class="disclaimer">
+
+    <h3>
+        ⚠️ Admin Notice
+    </h3>
+
+    <p>
+        Admin access is protected by Supabase Authentication.
+        Free and VIP football tips remain synchronized with Supabase.
+    </p>
+
+</section>
+
+
+</div>
+
+
+
+<!-- ==================================================
+     ADMIN JAVASCRIPT
+================================================== -->
+
+<script>
+
+/* ==================================================
+   SUPABASE CONFIG
+================================================== */
+
+const SUPABASE_URL =
+    "https://pgvesfuzeonhyfzhshas.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_e4pxjOJc8dZ8sYlOhq15Ng_6Xn3nQ8p";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+
+/* ==================================================
+   GLOBAL VARIABLES
+================================================== */
+
+let adminTips =
+    JSON.parse(
+        localStorage.getItem(
+            "dundeeTips"
+        )
+    ) || [];
+
+
+let editingIndex = null;
+
+
+
+/* ==================================================
+   AUTH HELPERS
+================================================== */
+
+async function getCurrentAdminSession() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.auth.getSession();
+
+
+    if (error) {
+
+        console.error(
+            "SESSION ERROR:",
+            error
+        );
+
+        return null;
+
+    }
+
+
+    return data.session;
+
+}
+
+
+
+/* ==================================================
+   SHOW DASHBOARD
+================================================== */
+
+function showAdminDashboard() {
+
+    const login =
+        document.getElementById(
+            "adminLogin"
+        );
+
+
+    const dashboard =
+        document.getElementById(
+            "adminDashboard"
+        );
+
+
+    if (login)
+        login.style.display =
+            "none";
+
+
+    if (dashboard)
+        dashboard.style.display =
+            "block";
+
+
+    renderAdminTips();
+
+    updateAdminStats();
+
+    updateVipTicketSummary();
+
+}
+
+
+
+/* ==================================================
+   SHOW LOGIN
+================================================== */
+
+function showAdminLogin() {
+
+    const login =
+        document.getElementById(
+            "adminLogin"
+        );
+
+
+    const dashboard =
+        document.getElementById(
+            "adminDashboard"
+        );
+
+
+    if (login)
+        login.style.display =
+            "block";
+
+
+    if (dashboard)
+        dashboard.style.display =
+            "none";
+
+}
+
+
+
+/* ==================================================
+   ADMIN LOGIN
+================================================== */
+
+async function adminLogin() {
+
+    const email =
+        document.getElementById(
+            "adminEmail"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "adminPassword"
+        ).value;
+
+
+    const errorElement =
+        document.getElementById(
+            "loginError"
+        );
+
+
+    const loginButton =
+        document.getElementById(
+            "loginButton"
+        );
+
+
+    if (!email || !password) {
+
+        errorElement.textContent =
+            "Please enter your email and password.";
+
+        return;
+
+    }
+
+
+    errorElement.textContent =
+        "";
+
+
+    loginButton.disabled =
+        true;
+
+
+    loginButton.textContent =
+        "LOGGING IN...";
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.signInWithPassword({
+
+                email:
+                    email,
+
+                password:
+                    password
+
+            });
+
+
+        if (error) {
+
+            console.error(
+                "LOGIN ERROR:",
+                error
+            );
+
+
+            errorElement.textContent =
+                error.message;
+
+
+            loginButton.disabled =
+                false;
+
+
+            loginButton.textContent =
+                "LOGIN";
+
+
+            return;
+
+        }
+
+
+        if (!data.session) {
+
+            errorElement.textContent =
+                "Login failed. No active session.";
+
+            loginButton.disabled =
+                false;
+
+            loginButton.textContent =
+                "LOGIN";
+
+            return;
+
+        }
+
+
+        showAdminDashboard();
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "LOGIN EXCEPTION:",
+            error
+        );
+
+
+        errorElement.textContent =
+            "Unable to login. Please try again.";
+
+
+        loginButton.disabled =
+            false;
+
+
+        loginButton.textContent =
+            "LOGIN";
+
+    }
+
+}
+
+
+
+/* ==================================================
+   LOGOUT
+================================================== */
+
+async function adminLogout() {
+
+    try {
+
+        await supabaseClient.auth.signOut();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "LOGOUT ERROR:",
+            error
+        );
+
+    }
+
+
+    showAdminLogin();
+
+}
+
+
+
+/* ==================================================
+   AUTH STATE LISTENER
+================================================== */
+
+supabaseClient.auth.onAuthStateChange(
+    function(event, session) {
+
+        if (session) {
+
+            showAdminDashboard();
+
+        }
+
+        else {
+
+            showAdminLogin();
+
+        }
+
+    }
+);
+
+
+
+/* ==================================================
+   LOCAL DATE
+================================================== */
+
+function getLocalDateString() {
+
+    const date =
+        new Date();
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+
+/* ==================================================
+   SAVE LOCAL TIPS
+================================================== */
+
+function saveTips() {
+
+    localStorage.setItem(
+        "dundeeTips",
+        JSON.stringify(
+            adminTips
+        )
+    );
+
+}
+
+
+
+/* ==================================================
+   SYNC VIP TIP TO SUPABASE
+================================================== */
+
+async function syncVipTipToSupabase(
+    tip,
+    localIndex
+) {
+
+    if (
+        !supabaseClient ||
+        tip.type !== "vip"
+    ) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        if (tip.supabaseId) {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("vip_tips")
+                    .update({
+
+                        match_date:
+                            tip.date,
+
+                        match_time:
+                            tip.time || null,
+
+                        league:
+                            tip.league || null,
+
+                        home_team:
+                            tip.home,
+
+                        away_team:
+                            tip.away,
+
+                        prediction:
+                            tip.prediction,
+
+                        odds:
+                            parseFloat(
+                                tip.odds
+                            ),
+
+                        result:
+                            tip.result ||
+                            "pending"
+
+                    })
+                    .eq(
+                        "id",
+                        tip.supabaseId
+                    )
+                    .select()
+                    .single();
+
+
+            if (error) {
+
+                console.error(
+                    "VIP UPDATE ERROR:",
+                    error
+                );
+
+                return null;
+
+            }
+
+
+            return data;
+
+        }
+
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("vip_tips")
+                .insert([{
+
+                    match_date:
+                        tip.date,
+
+                    match_time:
+                        tip.time || null,
+
+                    league:
+                        tip.league || null,
+
+                    home_team:
+                        tip.home,
+
+                    away_team:
+                        tip.away,
+
+                    prediction:
+                        tip.prediction,
+
+                    odds:
+                        parseFloat(
+                            tip.odds
+                        ),
+
+                    result:
+                        tip.result ||
+                        "pending"
+
+                }])
+                .select()
+                .single();
+
+
+        if (error) {
+
+            console.error(
+                "VIP INSERT ERROR:",
+                error
+            );
+
+            alert(
+                "VIP tip could not sync to Supabase.\n\n" +
+                error.message
+            );
+
+            return null;
+
+        }
+
+
+        if (
+            typeof localIndex === "number" &&
+            adminTips[localIndex]
+        ) {
+
+            adminTips[
+                localIndex
+            ].supabaseId =
+                data.id;
+
+            saveTips();
+
+        }
+
+
+        return data;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "VIP SUPABASE ERROR:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+
+/* ==================================================
+   SYNC FREE TIP TO SUPABASE
+================================================== */
+
+async function syncFreeTipToSupabase(
+    tip,
+    localIndex
+) {
+
+    if (
+        !supabaseClient ||
+        tip.type !== "free"
+    ) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        if (tip.freeSupabaseId) {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("free_tips")
+                    .update({
+
+                        match_date:
+                            tip.date,
+
+                        match_time:
+                            tip.time || null,
+
+                        league:
+                            tip.league || null,
+
+                        home_team:
+                            tip.home,
+
+                        away_team:
+                            tip.away,
+
+                        prediction:
+                            tip.prediction,
+
+                        odds:
+                            parseFloat(
+                                tip.odds
+                            ),
+
+                        result:
+                            tip.result ||
+                            "pending"
+
+                    })
+                    .eq(
+                        "id",
+                        tip.freeSupabaseId
+                    )
+                    .select()
+                    .single();
+
+
+            if (error) {
+
+                console.error(
+                    "FREE TIP UPDATE ERROR:",
+                    error
+                );
+
+                return null;
+
+            }
+
+
+            return data;
+
+        }
+
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("free_tips")
+                .insert([{
+
+                    match_date:
+                        tip.date,
+
+                    match_time:
+                        tip.time || null,
+
+                    league:
+                        tip.league || null,
+
+                    home_team:
+                        tip.home,
+
+                    away_team:
+                        tip.away,
+
+                    prediction:
+                        tip.prediction,
+
+                    odds:
+                        parseFloat(
+                            tip.odds
+                        ),
+
+                    result:
+                        tip.result ||
+                        "pending"
+
+                }])
+                .select()
+                .single();
+
+
+        if (error) {
+
+            console.error(
+                "FREE TIP INSERT ERROR:",
+                error
+            );
+
+            alert(
+                "Free Tip could not sync to Supabase.\n\n" +
+                error.message
+            );
+
+            return null;
+
+        }
+
+
+        if (
+            typeof localIndex === "number" &&
+            adminTips[localIndex]
+        ) {
+
+            adminTips[
+                localIndex
+            ].freeSupabaseId =
+                data.id;
+
+            saveTips();
+
+        }
+
+
+        return data;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "FREE TIP SUPABASE ERROR:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+
+/* ==================================================
+   DELETE VIP TIP
+================================================== */
+
+async function deleteVipTipFromSupabase(
+    tip
+) {
+
+    if (
+        !supabaseClient ||
+        tip.type !== "vip" ||
+        !tip.supabaseId
+    ) {
+
+        return true;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("vip_tips")
+            .delete()
+            .eq(
+                "id",
+                tip.supabaseId
+            );
+
+
+    if (error) {
+
+        console.error(
+            "VIP DELETE ERROR:",
+            error
+        );
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+
+/* ==================================================
+   DELETE FREE TIP
+================================================== */
+
+async function deleteFreeTipFromSupabase(
+    tip
+) {
+
+    if (
+        !supabaseClient ||
+        tip.type !== "free" ||
+        !tip.freeSupabaseId
+    ) {
+
+        return true;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("free_tips")
+            .delete()
+            .eq(
+                "id",
+                tip.freeSupabaseId
+            );
+
+
+    if (error) {
+
+        console.error(
+            "FREE DELETE ERROR:",
+            error
+        );
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+
+/* ==================================================
+   ADMIN STATS
+================================================== */
+
+function updateAdminStats() {
+
+    const total =
+        adminTips.length;
+
+
+    const vip =
+        adminTips.filter(
+            function(tip) {
+
+                return tip.type === "vip";
+
+            }
+        ).length;
+
+
+    const won =
+        adminTips.filter(
+            function(tip) {
+
+                return tip.result === "won";
+
+            }
+        ).length;
+
+
+    const lost =
+        adminTips.filter(
+            function(tip) {
+
+                return tip.result === "lost";
+
+            }
+        ).length;
+
+
+    const totalElement =
+        document.getElementById(
+            "adminTotalTips"
+        );
+
+
+    const vipElement =
+        document.getElementById(
+            "adminVipTips"
+        );
+
+
+    const wonElement =
+        document.getElementById(
+            "adminWonTips"
+        );
+
+
+    const lostElement =
+        document.getElementById(
+            "adminLostTips"
+        );
+
+
+    if (totalElement)
+        totalElement.textContent =
+            total;
+
+
+    if (vipElement)
+        vipElement.textContent =
+            vip;
+
+
+    if (wonElement)
+        wonElement.textContent =
+            won;
+
+
+    if (lostElement)
+        lostElement.textContent =
+            lost;
+
+}
+
+
+
+/* ==================================================
+   VIP SUMMARY
+================================================== */
+
+function updateVipTicketSummary() {
+
+    const vipTips =
+        adminTips.filter(
+            function(tip) {
+
+                return (
+                    tip.type === "vip" &&
+                    tip.date
+                );
+
+            }
+        );
+
+
+    const dateElement =
+        document.getElementById(
+            "adminVipTicketDate"
+        );
+
+
+    const matchElement =
+        document.getElementById(
+            "adminVipMatchCount"
+        );
+
+
+    const oddsElement =
+        document.getElementById(
+            "adminVipTotalOdds"
+        );
+
+
+    const wonElement =
+        document.getElementById(
+            "adminVipWon"
+        );
+
+
+    const lostElement =
+        document.getElementById(
+            "adminVipLost"
+        );
+
+
+    const pendingElement =
+        document.getElementById(
+            "adminVipPending"
+        );
+
+
+    if (
+        vipTips.length === 0
+    ) {
+
+        if (dateElement)
+            dateElement.textContent = "--";
+
+        if (matchElement)
+            matchElement.textContent = "0";
+
+        if (oddsElement)
+            oddsElement.textContent = "0.00";
+
+        if (wonElement)
+            wonElement.textContent = "0";
+
+        if (lostElement)
+            lostElement.textContent = "0";
+
+        if (pendingElement)
+            pendingElement.textContent = "0";
+
+        return;
+
+    }
+
+
+    const today =
+        getLocalDateString();
+
+
+    let selectedDate =
+        today;
+
+
+    const todayTips =
+        vipTips.filter(
+            function(tip) {
+
+                return tip.date === today;
+
+            }
+        );
+
+
+    if (
+        todayTips.length === 0
+    ) {
+
+        const dates =
+            vipTips
+                .map(
+                    function(tip) {
+
+                        return tip.date;
+
+                    }
+                )
+                .sort(
+                    function(a, b) {
+
+                        return (
+                            new Date(b) -
+                            new Date(a)
+                        );
+
+                    }
+                );
+
+
+        selectedDate =
+            dates[0];
+
+    }
+
+
+    const selectedTips =
+        vipTips.filter(
+            function(tip) {
+
+                return tip.date === selectedDate;
+
+            }
+        );
+
+
+    let totalOdds = 1;
+
+
+    selectedTips.forEach(
+        function(tip) {
+
+            const odd =
+                parseFloat(
+                    tip.odds
+                );
+
+
+            if (!isNaN(odd)) {
+
+                totalOdds =
+                    totalOdds * odd;
+
+            }
+
+        }
+    );
+
+
+    const won =
+        selectedTips.filter(
+            function(tip) {
+
+                return tip.result === "won";
+
+            }
+        ).length;
+
+
+    const lost =
+        selectedTips.filter(
+            function(tip) {
+
+                return tip.result === "lost";
+
+            }
+        ).length;
+
+
+    const pending =
+        selectedTips.filter(
+            function(tip) {
+
+                return (
+                    !tip.result ||
+                    tip.result === "pending"
+                );
+
+            }
+        ).length;
+
+
+    const dateObject =
+        new Date(
+            selectedDate +
+            "T00:00:00"
+        );
+
+
+    const formattedDate =
+        dateObject.toLocaleDateString(
+            "en-GB",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        ).toUpperCase();
+
+
+    if (dateElement)
+        dateElement.textContent =
+            formattedDate;
+
+
+    if (matchElement)
+        matchElement.textContent =
+            selectedTips.length;
+
+
+    if (oddsElement)
+        oddsElement.textContent =
+            totalOdds.toFixed(2);
+
+
+    if (wonElement)
+        wonElement.textContent =
+            won;
+
+
+    if (lostElement)
+        lostElement.textContent =
+            lost;
+
+
+    if (pendingElement)
+        pendingElement.textContent =
+            pending;
+
+}
+
+
+
+/* ==================================================
+   RENDER ADMIN TIPS
+================================================== */
+
+function renderAdminTips() {
+
+    const list =
+        document.getElementById(
+            "adminTipsList"
+        );
+
+
+    if (!list)
+        return;
+
+
+    if (
+        adminTips.length === 0
+    ) {
+
+        list.innerHTML =
+            '<div class="admin-empty">No tips added yet.</div>';
+
+        updateAdminStats();
+
+        updateVipTicketSummary();
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    adminTips.forEach(
+        function(tip, index) {
+
+            if (!tip.result) {
+
+                tip.result =
+                    "pending";
+
+            }
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "admin-table-row";
+
+
+            row.innerHTML = `
+
+                <span>
+                    ${tip.date || "--"}
+                </span>
+
+
+                <strong>
+
+                    ${tip.home || "Home"}
+
+                    <b>
+                        VS
+                    </b>
+
+                    ${tip.away || "Away"}
+
+                </strong>
+
+
+                <span class="admin-tip">
+
+                    ${tip.prediction || "--"}
+
+                </span>
+
+
+                <span class="admin-odd">
+
+                    ${tip.odds || "--"}
+
+                </span>
+
+
+                <span
+                    class="admin-type ${tip.type || "free"}"
+                >
+
+                    ${(tip.type || "free").toUpperCase()}
+
+                </span>
+
+
+                <select
+                    class="admin-result-select ${tip.result}"
+                    onchange="
+                        updateTipResult(
+                            ${index},
+                            this.value
+                        )
+                    "
+                >
+
+                    <option
+                        value="pending"
+                        ${tip.result === "pending" ? "selected" : ""}
+                    >
+                        PENDING
+                    </option>
+
+
+                    <option
+                        value="won"
+                        ${tip.result === "won" ? "selected" : ""}
+                    >
+                        WON
+                    </option>
+
+
+                    <option
+                        value="lost"
+                        ${tip.result === "lost" ? "selected" : ""}
+                    >
+                        LOST
+                    </option>
+
+                </select>
+
+
+                <div class="admin-actions">
+
+                    <button
+                        type="button"
+                        class="edit-tip"
+                        onclick="
+                            editTip(${index})
+                        "
+                    >
+                        EDIT
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="delete-tip"
+                        onclick="
+                            deleteTip(${index})
+                        "
+                    >
+                        DELETE
+                    </button>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(row);
+
+        }
+    );
+
+
+    saveTips();
+
+    updateAdminStats();
+
+    updateVipTicketSummary();
+
+}
+
+
+
+/* ==================================================
+   UPDATE RESULT
+================================================== */
+
+async function updateTipResult(
+    index,
+    result
+) {
+
+    const tip =
+        adminTips[index];
+
+
+    if (!tip)
+        return;
+
+
+    tip.result =
+        result;
+
+
+    saveTips();
+
+
+    let synced = true;
+
+
+    if (tip.type === "vip") {
+
+        const data =
+            await syncVipTipToSupabase(
+                tip,
+                index
+            );
+
+
+        if (!data && supabaseClient)
+            synced = false;
+
+    }
+
+
+    if (tip.type === "free") {
+
+        const data =
+            await syncFreeTipToSupabase(
+                tip,
+                index
+            );
+
+
+        if (!data && supabaseClient)
+            synced = false;
+
+    }
+
+
+    renderAdminTips();
+
+
+    if (!synced) {
+
+        alert(
+            "Result was saved locally, but Supabase synchronization failed."
+        );
+
+        return;
+
+    }
+
+
+    if (result === "won") {
+
+        alert(
+            "Result updated to WON!"
+        );
+
+    }
+
+    else if (result === "lost") {
+
+        alert(
+            "Result updated to LOST!"
+        );
+
+    }
+
+}
+
+
+
+/* ==================================================
+   EDIT TIP
+================================================== */
+
+function editTip(index) {
+
+    const tip =
+        adminTips[index];
+
+
+    if (!tip)
+        return;
+
+
+    document.getElementById(
+        "tipDate"
+    ).value =
+        tip.date || "";
+
+
+    document.getElementById(
+        "tipTime"
+    ).value =
+        tip.time || "";
+
+
+    document.getElementById(
+        "tipLeague"
+    ).value =
+        tip.league || "";
+
+
+    document.getElementById(
+        "homeTeam"
+    ).value =
+        tip.home || "";
+
+
+    document.getElementById(
+        "awayTeam"
+    ).value =
+        tip.away || "";
+
+
+    document.getElementById(
+        "tipPrediction"
+    ).value =
+        tip.prediction || "";
+
+
+    document.getElementById(
+        "tipOdds"
+    ).value =
+        tip.odds || "";
+
+
+    document.getElementById(
+        "tipType"
+    ).value =
+        tip.type || "free";
+
+
+    editingIndex =
+        index;
+
+
+    const submitButton =
+        document.querySelector(
+            "#adminTipForm .admin-submit"
+        );
+
+
+    if (submitButton)
+        submitButton.textContent =
+            "💾 UPDATE TIP";
+
+
+    const formTitle =
+        document.getElementById(
+            "tipFormTitle"
+        );
+
+
+    if (formTitle)
+        formTitle.textContent =
+            "✏️ Edit Football Tip";
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+
+/* ==================================================
+   DELETE TIP
+================================================== */
+
+async function deleteTip(index) {
+
+    const tip =
+        adminTips[index];
+
+
+    if (!tip)
+        return;
+
+
+    const confirmDelete =
+        confirm(
+            "Delete this tip?"
+        );
+
+
+    if (!confirmDelete)
+        return;
+
+
+    let deletedFromSupabase =
+        true;
+
+
+    if (tip.type === "vip") {
+
+        deletedFromSupabase =
+            await deleteVipTipFromSupabase(
+                tip
+            );
+
+    }
+
+
+    if (tip.type === "free") {
+
+        deletedFromSupabase =
+            await deleteFreeTipFromSupabase(
+                tip
+            );
+
+    }
+
+
+    if (!deletedFromSupabase) {
+
+        alert(
+            "The tip could not be deleted from Supabase."
+        );
+
+        return;
+
+    }
+
+
+    adminTips.splice(
+        index,
+        1
+    );
+
+
+    saveTips();
+
+    renderAdminTips();
+
+
+    alert(
+        "Tip deleted successfully!"
+    );
+
+}
+
+
+
+/* ==================================================
+   ADD / UPDATE TIP
+================================================== */
+
+const adminTipForm =
+    document.getElementById(
+        "adminTipForm"
+    );
+
+
+if (adminTipForm) {
+
+    adminTipForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const newTip = {
+
+                date:
+                    document.getElementById(
+                        "tipDate"
+                    ).value,
+
+                time:
+                    document.getElementById(
+                        "tipTime"
+                    ).value,
+
+                league:
+                    document.getElementById(
+                        "tipLeague"
+                    ).value.trim(),
+
+                home:
+                    document.getElementById(
+                        "homeTeam"
+                    ).value.trim(),
+
+                away:
+                    document.getElementById(
+                        "awayTeam"
+                    ).value.trim(),
+
+                prediction:
+                    document.getElementById(
+                        "tipPrediction"
+                    ).value.trim(),
+
+                odds:
+                    document.getElementById(
+                        "tipOdds"
+                    ).value,
+
+                type:
+                    document.getElementById(
+                        "tipType"
+                    ).value,
+
+                result:
+                    "pending"
+
+            };
+
+
+
+            /* ==========================================
+               UPDATE EXISTING TIP
+            ========================================== */
+
+            if (
+                editingIndex !== null
+            ) {
+
+                const oldTip =
+                    adminTips[
+                        editingIndex
+                    ];
+
+
+                newTip.result =
+                    oldTip.result ||
+                    "pending";
+
+
+                newTip.supabaseId =
+                    oldTip.supabaseId ||
+                    null;
+
+
+                newTip.freeSupabaseId =
+                    oldTip.freeSupabaseId ||
+                    null;
+
+
+                adminTips[
+                    editingIndex
+                ] = {
+
+                    ...oldTip,
+
+                    ...newTip
+
+                };
+
+
+                const updatedTip =
+                    adminTips[
+                        editingIndex
+                    ];
+
+
+                /*
+                 * VIP → FREE
+                 */
+
+                if (
+                    oldTip.type === "vip" &&
+                    newTip.type === "free"
+                ) {
+
+                    await deleteVipTipFromSupabase(
+                        oldTip
+                    );
+
+
+                    updatedTip.supabaseId =
+                        null;
+
+
+                    await syncFreeTipToSupabase(
+                        updatedTip,
+                        editingIndex
+                    );
+
+                }
+
+
+                /*
+                 * FREE → VIP
+                 */
+
+                else if (
+                    oldTip.type === "free" &&
+                    newTip.type === "vip"
+                ) {
+
+                    await deleteFreeTipFromSupabase(
+                        oldTip
+                    );
+
+
+                    updatedTip.freeSupabaseId =
+                        null;
+
+
+                    await syncVipTipToSupabase(
+                        updatedTip,
+                        editingIndex
+                    );
+
+                }
+
+
+                /*
+                 * VIP → VIP
+                 */
+
+                else if (
+                    newTip.type === "vip"
+                ) {
+
+                    await syncVipTipToSupabase(
+                        updatedTip,
+                        editingIndex
+                    );
+
+                }
+
+
+                /*
+                 * FREE → FREE
+                 */
+
+                else {
+
+                    await syncFreeTipToSupabase(
+                        updatedTip,
+                        editingIndex
+                    );
+
+                }
+
+
+                editingIndex =
+                    null;
+
+
+                const submitButton =
+                    document.querySelector(
+                        "#adminTipForm .admin-submit"
+                    );
+
+
+                if (submitButton)
+                    submitButton.textContent =
+                        "➕ ADD TIP";
+
+
+                const formTitle =
+                    document.getElementById(
+                        "tipFormTitle"
+                    );
+
+
+                if (formTitle)
+                    formTitle.textContent =
+                        "➕ Create Football Tip";
+
+
+                saveTips();
+
+                renderAdminTips();
+
+                adminTipForm.reset();
+
+
+                alert(
+                    "Tip updated successfully!"
+                );
+
+
+                return;
+
+            }
+
+
+
+            /* ==========================================
+               ADD NEW TIP
+            ========================================== */
+
+            adminTips.unshift(
+                newTip
+            );
+
+
+            saveTips();
+
+
+            const newIndex =
+                0;
+
+
+            let synced =
+                true;
+
+
+            if (
+                newTip.type === "vip"
+            ) {
+
+                const result =
+                    await syncVipTipToSupabase(
+                        newTip,
+                        newIndex
+                    );
+
+
+                if (!result)
+                    synced = false;
+
+            }
+
+
+            if (
+                newTip.type === "free"
+            ) {
+
+                const result =
+                    await syncFreeTipToSupabase(
+                        newTip,
+                        newIndex
+                    );
+
+
+                if (!result)
+                    synced = false;
+
+            }
+
+
+            renderAdminTips();
+
+            adminTipForm.reset();
+
+
+            if (!synced) {
+
+                alert(
+                    "Tip was added locally, but Supabase synchronization failed."
+                );
+
+            }
+
+            else {
+
+                alert(
+                    "Tip added successfully!"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* ==================================================
+   SYNC OLD TIPS
+================================================== */
+
+async function syncExistingTips() {
+
+    if (!supabaseClient)
+        return;
+
+
+    for (
+        let i = 0;
+        i < adminTips.length;
+        i++
+    ) {
+
+        const tip =
+            adminTips[i];
+
+
+        if (
+            !tip.date ||
+            !tip.home ||
+            !tip.away
+        ) {
+
+            continue;
+
+        }
+
+
+        /*
+         * OLD VIP TIPS
+         */
+
+        if (
+            tip.type === "vip" &&
+            !tip.supabaseId
+        ) {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("vip_tips")
+                    .select("id")
+                    .eq(
+                        "match_date",
+                        tip.date
+                    )
+                    .eq(
+                        "home_team",
+                        tip.home
+                    )
+                    .eq(
+                        "away_team",
+                        tip.away
+                    )
+                    .limit(1);
+
+
+            if (
+                !error &&
+                data &&
+                data.length > 0
+            ) {
+
+                adminTips[
+                    i
+                ].supabaseId =
+                    data[0].id;
+
+            }
+
+            else if (!error) {
+
+                await syncVipTipToSupabase(
+                    tip,
+                    i
+                );
+
+            }
+
+        }
+
+
+
+        /*
+         * OLD FREE TIPS
+         */
+
+        if (
+            tip.type === "free" &&
+            !tip.freeSupabaseId
+        ) {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("free_tips")
+                    .select("id")
+                    .eq(
+                        "match_date",
+                        tip.date
+                    )
+                    .eq(
+                        "home_team",
+                        tip.home
+                    )
+                    .eq(
+                        "away_team",
+                        tip.away
+                    )
+                    .limit(1);
+
+
+            if (
+                !error &&
+                data &&
+                data.length > 0
+            ) {
+
+                adminTips[
+                    i
+                ].freeSupabaseId =
+                    data[0].id;
+
+            }
+
+            else if (!error) {
+
+                await syncFreeTipToSupabase(
+                    tip,
+                    i
+                );
+
+            }
+
+        }
+
+    }
+
+
+    saveTips();
+
+    renderAdminTips();
+
+}
+
+
+
+/* ==================================================
+   VIP ACCESS CODE
+================================================== */
+
+async function generateVipAccessCode() {
+
+    if (!supabaseClient) {
+
+        alert(
+            "Supabase is not connected."
+        );
+
+        return;
+
+    }
+
+
+    const code =
+        "DUNDEE-" +
+        Math.random()
+            .toString(36)
+            .substring(2, 7)
+            .toUpperCase() +
+        Math.random()
+            .toString(36)
+            .substring(2, 5)
+            .toUpperCase();
+
+
+    const expiresAt =
+        new Date(
+            Date.now() +
+            7 * 24 * 60 * 60 * 1000
+        ).toISOString();
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("vip_codes")
+            .insert([{
+
+                code:
+                    code,
+
+                expires_at:
+                    expiresAt,
+
+                status:
+                    "unused"
+
+            }])
+            .select()
+            .single();
+
+
+    if (error) {
+
+        console.error(
+            "VIP CODE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Failed to create VIP code:\n\n" +
+            error.message
+        );
+
+
+        return;
+
+    }
+
+
+    const codeBox =
+        document.getElementById(
+            "vipAccessCodeBox"
+        );
+
+
+    const codeElement =
+        document.getElementById(
+            "vipAccessCode"
+        );
+
+
+    if (codeBox)
+        codeBox.style.display =
+            "block";
+
+
+    if (codeElement)
+        codeElement.textContent =
+            data.code;
+
+
+    localStorage.setItem(
+        "dundeeVipAccessCode",
+        data.code
+    );
+
+
+    const status =
+        document.getElementById(
+            "vipAccessStatus"
+        );
+
+
+    if (status)
+        status.textContent =
+            "CODE READY";
+
+
+    alert(
+        "VIP Code created successfully!\n\n" +
+        "Code: " +
+        data.code +
+        "\n\nExpires: " +
+        new Date(
+            data.expires_at
+        ).toLocaleString()
+    );
+
+}
+
+
+
+/* ==================================================
+   COPY VIP CODE
+================================================== */
+
+function copyVipAccessCode() {
+
+    const code =
+        localStorage.getItem(
+            "dundeeVipAccessCode"
+        );
+
+
+    if (!code) {
+
+        alert(
+            "No VIP code available."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
+
+        navigator.clipboard
+            .writeText(code)
+            .then(
+                function() {
+
+                    alert(
+                        "VIP access code copied!"
+                    );
+
+                }
+            )
+            .catch(
+                function() {
+
+                    alert(
+                        "Copy failed. Please copy the code manually."
+                    );
+
+                }
+            );
+
+    }
+
+    else {
+
+        alert(
+            "Copy is not supported."
+        );
+
+    }
+
+}
+
+
+
+/* ==================================================
+   VIP REVIEWS
+================================================== */
+
+const reviewForm =
+    document.getElementById(
+        "reviewForm"
+    );
+
+
+if (reviewForm) {
+
+    reviewForm.addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const review = {
+
+                name:
+                    document.getElementById(
+                        "reviewName"
+                    ).value.trim(),
+
+                country:
+                    document.getElementById(
+                        "reviewCountry"
+                    ).value.trim(),
+
+                rating:
+                    document.getElementById(
+                        "reviewRating"
+                    ).value,
+
+                amount:
+                    document.getElementById(
+                        "reviewAmount"
+                    ).value.trim(),
+
+                comment:
+                    document.getElementById(
+                        "reviewComment"
+                    ).value.trim(),
+
+                date:
+                    new Date().toISOString()
+
+            };
+
+
+            let reviews =
+                JSON.parse(
+                    localStorage.getItem(
+                        "dundeeReviews"
+                    )
+                ) || [];
+
+
+            reviews.unshift(
+                review
+            );
+
+
+            localStorage.setItem(
+                "dundeeReviews",
+                JSON.stringify(
+                    reviews
+                )
+            );
+
+
+            reviewForm.reset();
+
+
+            alert(
+                "VIP review added successfully!"
+            );
+
+        }
+    );
+
+}
+
+
+
+/* ==================================================
+   INITIAL AUTH CHECK
+================================================== */
+
+async function initializeAdmin() {
+
+    showAdminLogin();
+
+
+    const session =
+        await getCurrentAdminSession();
+
+
+    if (session) {
+
+        showAdminDashboard();
+
+        /*
+         * Sync existing locally stored tips
+         * after successful authentication.
+         */
+
+        await syncExistingTips();
+
+    }
+
+}
+
+
+initializeAdmin();
+
+</script>
+
+
+</body>
+
+</html>

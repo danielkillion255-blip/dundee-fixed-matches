@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Free Tips - Dundee Fixed Matches</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* =====================================================
+           FREE TIPS PAGE
+        ===================================================== */
+
+        .free-tips-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* =====================================================
+           INTRO
+        ===================================================== */
+
+        .free-tips-intro {
+            background: #101010 !important;
+            border: 1px solid #333333 !important;
+            border-radius: 16px !important;
+            padding: 32px 25px !important;
+            margin: 0 auto 28px !important;
+            text-align: center !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.30) !important;
+        }
+
+        .free-tips-intro .intro-label {
+            display: inline-block;
+            margin: 0 0 12px;
+            color: #d4af37 !important;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .free-tips-intro h2 {
+            margin: 0 0 10px !important;
+            color: #ffffff !important;
+            font-size: 28px !important;
+            font-weight: 900 !important;
+        }
+
+        .free-tips-intro .intro-subtitle {
+            margin: 0 !important;
+            color: #f1f1f1 !important;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .intro-line {
+            width: 65px;
+            height: 3px;
+            margin: 18px auto 0;
+            background: #d4af37;
+            border-radius: 10px;
+        }
+
+        /* =====================================================
+           DATE BUTTONS
+        ===================================================== */
+
+        .date-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 28px 0 30px;
+        }
+
+        .date-btn {
+            appearance: none;
+            border: 1px solid #555555;
+            background: #171717;
+            color: #ffffff;
+            padding: 11px 20px;
+            min-width: 95px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+
+        .date-btn:hover {
+            background: #242424;
+            border-color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+        .date-btn.active {
+            background: #d4af37;
+            border-color: #d4af37;
+            color: #111111;
+            box-shadow: 0 5px 16px rgba(212,175,55,0.25);
+        }
+
+        /* =====================================================
+           DAY HEADER
+        ===================================================== */
+
+        .tips-day-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 18px;
+            padding: 17px 20px;
+            background: #151515 !important;
+            border: 1px solid #383838 !important;
+            border-left: 4px solid #d4af37 !important;
+            border-radius: 10px;
+        }
+
+        .tips-day-title h3 {
+            margin: 0;
+            color: #ffffff !important;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .tips-day-count {
+            color: #ffffff !important;
+            background: #252525 !important;
+            border: 1px solid #444444 !important;
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: #151515;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .summary-label {
+            color: #aaaaaa;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 7px;
+        }
+
+        .summary-value {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .summary-card.won .summary-value {
+            color: #66f0b0;
+        }
+
+        .summary-card.lost .summary-value {
+            color: #ff6b6b;
+        }
+
+        .summary-card.rate .summary-value {
+            color: #d4af37;
+        }
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .free-tips-table {
+            width: 100%;
+            overflow-x: auto;
+            background: #101010 !important;
+            border: 1px solid #333333 !important;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            scrollbar-width: thin;
+            scrollbar-color: #d4af37 #202020;
+        }
+
+        .free-tips-table::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .free-tips-table::-webkit-scrollbar-track {
+            background: #202020;
+        }
+
+        .free-tips-table::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 10px;
+        }
+
+        .free-header,
+        .free-row {
+            display: grid;
+            grid-template-columns:
+                90px
+                150px
+                minmax(330px, 1fr)
+                140px
+                90px
+                120px;
+            align-items: center;
+            gap: 15px;
+            min-width: 1000px;
+        }
+
+        .free-header {
+            padding: 16px 20px;
+            background: #222222 !important;
+            border-bottom: 2px solid #d4af37 !important;
+            color: #ffffff !important;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .free-header div:nth-child(5),
+        .free-header div:nth-child(6) {
+            color: #d4af37 !important;
+        }
+
+        .free-row {
+            padding: 17px 20px;
+            background: #151515 !important;
+            border-bottom: 1px solid #303030 !important;
+            transition: all 0.2s ease;
+        }
+
+        .free-row:nth-child(even) {
+            background: #191919 !important;
+        }
+
+        .free-row:last-child {
+            border-bottom: none !important;
+        }
+
+        .free-row:hover {
+            background: #242424 !important;
+        }
+
+        /* =====================================================
+           TIME
+        ===================================================== */
+
+        .tip-time {
+            color: #ffffff !important;
+            font-size: 14px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .tip-time::before {
+            content: "🕒 ";
+            font-size: 11px;
+        }
+
+        /* =====================================================
+           LEAGUE
+        ===================================================== */
+
+        .tip-league {
+            color: #dddddd !important;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* =====================================================
+           MATCH
+        ===================================================== */
+
+        .free-match {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .team-name {
+            color: #ffffff !important;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .free-match strong {
+            color: #d4af37 !important;
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .team-badge {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #d4af37 !important;
+            border: 2px solid #f0cf62 !important;
+            color: #111111 !important;
+            font-size: 10px;
+            font-weight: 950;
+        }
+
+        /* =====================================================
+           TIP
+        ===================================================== */
+
+        .free-tip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: #123b2b !important;
+            border: 1px solid #237a58 !important;
+            color: #66f0b0 !important;
+            font-size: 12px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        /* =====================================================
+           ODD
+        ===================================================== */
+
+        .free-odd {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 7px 10px;
+            border-radius: 6px;
+            background: #332a12 !important;
+            border: 1px solid #8b7127 !important;
+            color: #f6d365 !important;
+            font-size: 13px;
+            font-weight: 950;
+        }
+
+        /* =====================================================
+           RESULT
+        ===================================================== */
+
+        .free-result {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 950;
+            text-align: center;
+        }
+
+        .result-pending {
+            background: #252525;
+            border: 1px solid #555555;
+            color: #dddddd;
+        }
+
+        .result-won {
+            background: #123b2b;
+            border: 1px solid #237a58;
+            color: #66f0b0;
+        }
+
+        .result-lost {
+            background: #3a1616;
+            border: 1px solid #8f3535;
+            color: #ff7777;
+        }
+
+        /* =====================================================
+           EMPTY / LOADING / ERROR
+        ===================================================== */
+
+        .free-tips-empty {
+            max-width: 700px;
+            margin: 25px auto 0;
+            padding: 65px 25px;
+            text-align: center;
+            background: #151515 !important;
+            border: 1px solid #333333 !important;
+            border-radius: 12px;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .free-tips-empty h3 {
+            margin: 0 0 10px;
+            color: #ffffff !important;
+            font-size: 21px;
+        }
+
+        .free-tips-empty p {
+            margin: 0;
+            color: #cccccc !important;
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           VIP BOX
+        ===================================================== */
+
+        .free-vip-box {
+            margin-top: 45px;
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .free-tips-container {
+                padding: 0 12px;
+            }
+
+            .results-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .date-buttons {
+                justify-content: flex-start;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+
+            .date-btn {
+                flex: 0 0 auto;
+            }
+
+            .tips-day-title {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .free-tips-intro h2 {
+                font-size: 22px !important;
+            }
+
+            .free-header,
+            .free-row {
+                grid-template-columns:
+                    75px
+                    135px
+                    minmax(310px, 1fr)
+                    125px
+                    85px
+                    105px;
+
+                min-width: 930px;
+                gap: 12px;
+            }
+
+            .team-name {
+                font-size: 12px;
+            }
+
+            .team-badge {
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
+                font-size: 9px;
+            }
+
+            .results-summary {
+                gap: 8px;
+            }
+
+            .summary-card {
+                padding: 12px 8px;
+            }
+
+            .summary-value {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ===================================================== -->
+
+    <header class="header">
+
+        <div class="logo">
+            ⚽ DUNDEE<span>FIXED MATCHES</span>
+        </div>
+
+        <nav class="navbar" id="mainNavbar">
+    <a href="./index.html" data-page="index.html">Home</a>
+    <a href="./fixed-matches.html" data-page="fixed-matches.html">Fixed Matches</a>
+    <a href="./free-tips.html" data-page="free-tips.html">Free Tips</a>
+    <a href="./vip.html" data-page="vip.html">VIP Tips</a>
+    <a href="./results.html" data-page="results.html">Results</a>
+    <a href="./contact.html" data-page="contact.html">Contact</a>
+</nav>
+
+        <button
+            class="menu-btn"
+            type="button"
+            aria-label="Open menu"
+        >
+            ☰
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+
+    <section class="page-hero free-hero">
+
+        <div class="page-hero-content">
+
+            <p class="small-title">
+                DUNDEE FOOTBALL PREDICTIONS
+            </p>
+
+            <h1>
+                DAILY <span>FREE TIPS</span>
+            </h1>
+
+            <p>
+                Free football predictions, match selections and betting tips.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FREE TIPS
+    ===================================================== -->
+
+    <section class="section">
+
+        <div class="free-tips-container">
+
+            <div class="free-tips-intro">
+
+                <p class="intro-label">
+                    FREE FOOTBALL PREDICTIONS
+                </p>
+
+                <h2>
+                    ⚽ Free Tips
+                </h2>
+
+                <p class="intro-subtitle">
+                    Daily selections published by Dundee Fixed Matches.
+                </p>
+
+                <div class="intro-line"></div>
+
+            </div>
+
+
+            <!-- DATE BUTTONS -->
+
+            <div
+                class="date-buttons"
+                id="dateButtons"
+            ></div>
+
+
+            <!-- CONTENT -->
+
+            <div id="freeTipsContent">
+
+                <div class="free-tips-empty">
+
+                    <div class="empty-icon">
+                        🔄
+                    </div>
+
+                    <h3>
+                        Loading Free Tips...
+                    </h3>
+
+                    <p>
+                        Please wait while today's selections are loaded.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         VIP CTA
+    ===================================================== -->
+
+    <section class="free-vip-box">
+
+        <div class="premium-content">
+
+            <p class="small-title">
+                WANT MORE?
+            </p>
+
+            <h2>
+                ⭐ UPGRADE TO VIP
+            </h2>
+
+            <p>
+                Get access to premium selections and additional football analysis.
+            </p>
+
+            <a
+                href="vip.html"
+                class="btn vip-btn"
+            >
+                VIEW VIP TIPS
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DISCLAIMER
+    ===================================================== -->
+
+    <section class="disclaimer">
+
+        <h3>
+            ⚠️ Important Notice
+        </h3>
+
+        <p>
+            Football predictions are for informational and entertainment
+            purposes only. Results are not guaranteed. Please gamble responsibly.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ===================================================== -->
+
+    <footer class="footer">
+
+        <div class="logo">
+            ⚽ DUNDEE<span>FIXED MATCHES</span>
+        </div>
+
+        <p>
+            Daily football predictions and match analysis.
+        </p>
+
+        <div class="social-links">
+
+            <a href="#">
+                Telegram
+            </a>
+
+            <a
+                href="https://wa.me/255759970800"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                WhatsApp
+            </a>
+
+            <a href="#">
+                Facebook
+            </a>
+
+        </div>
+
+        <p class="copyright">
+            © 2026 Dundee Fixed Matches. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- =====================================================
+         SUPABASE + FREE TIPS JAVASCRIPT
+    ===================================================== -->
+
+    <script>
+
+        /* =====================================================
+           SUPABASE CONFIG
+        ===================================================== */
+
+        const SUPABASE_URL =
+            "https://pgvesfuzeonhyfzhshas.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_e4pxjOJc8dZ8sYlOhq15Ng_6Xn3nQ8p";
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+        /* =====================================================
+           GLOBAL DATA
+        ===================================================== */
+
+        let freeTips = [];
+
+        let groupedTips = {};
+
+        let selectedDate = null;
+
+
+        /* =====================================================
+           ESCAPE HTML
+        ===================================================== */
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* =====================================================
+           DATE FORMAT
+        ===================================================== */
+
+        function formatDate(dateString) {
+
+            if (!dateString) {
+                return "";
+            }
+
+            const parts =
+                dateString.split("-");
+
+            if (parts.length !== 3) {
+                return dateString;
+            }
+
+            const year = parts[0];
+
+            const month =
+                parseInt(parts[1], 10);
+
+            const day =
+                parseInt(parts[2], 10);
+
+            const monthNames = [
+                "JAN",
+                "FEB",
+                "MAR",
+                "APR",
+                "MAY",
+                "JUN",
+                "JUL",
+                "AUG",
+                "SEP",
+                "OCT",
+                "NOV",
+                "DEC"
+            ];
+
+            return `${day} ${monthNames[month - 1]} ${year}`;
+
+        }
+
+
+        /* =====================================================
+           SHORT DATE
+        ===================================================== */
+
+        function getDateLabel(dateString) {
+
+            if (!dateString) {
+                return "";
+            }
+
+            const parts =
+                dateString.split("-");
+
+            if (parts.length !== 3) {
+                return dateString;
+            }
+
+            const monthNames = [
+                "JAN",
+                "FEB",
+                "MAR",
+                "APR",
+                "MAY",
+                "JUN",
+                "JUL",
+                "AUG",
+                "SEP",
+                "OCT",
+                "NOV",
+                "DEC"
+            ];
+
+            const day =
+                parseInt(parts[2], 10);
+
+            const month =
+                parseInt(parts[1], 10);
+
+            return `${day} ${monthNames[month - 1]}`;
+
+        }
+
+
+        /* =====================================================
+           TEAM BADGE
+        ===================================================== */
+
+        function getTeamBadge(team) {
+
+            if (!team) {
+                return "---";
+            }
+
+            return String(team)
+                .trim()
+                .substring(0, 3)
+                .toUpperCase();
+
+        }
+
+
+        /* =====================================================
+           RESULT DISPLAY
+        ===================================================== */
+
+        function getResultDisplay(result) {
+
+            const cleanResult =
+                String(result || "pending").toLowerCase();
+
+            if (cleanResult === "won") {
+
+                return `
+                    <div class="free-result result-won">
+                        🟢 WON
+                    </div>
+                `;
+
+            }
+
+            if (cleanResult === "lost") {
+
+                return `
+                    <div class="free-result result-lost">
+                        🔴 LOST
+                    </div>
+                `;
+
+            }
+
+            return `
+                <div class="free-result result-pending">
+                    ⏳ PENDING
+                </div>
+            `;
+
+        }
+
+
+        /* =====================================================
+           LOAD FROM SUPABASE
+        ===================================================== */
+
+        async function loadFreeTips() {
+
+            const container =
+                document.getElementById(
+                    "freeTipsContent"
+                );
+
+            if (container) {
+
+                container.innerHTML = `
+                    <div class="free-tips-empty">
+                        <div class="empty-icon">
+                            🔄
+                        </div>
+
+                        <h3>
+                            Loading Free Tips...
+                        </h3>
+
+                        <p>
+                            Connecting to Dundee Fixed Matches.
+                        </p>
+                    </div>
+                `;
+
+            }
+
+            try {
+
+                const {
+                    data,
+                    error
+                } = await supabaseClient
+                    .from("free_tips")
+                    .select(`
+                        id,
+                        match_date,
+                        match_time,
+                        league,
+                        home_team,
+                        away_team,
+                        prediction,
+                        odds,
+                        result
+                    `)
+                    .order(
+                        "match_date",
+                        {
+                            ascending: false
+                        }
+                    )
+                    .order(
+                        "match_time",
+                        {
+                            ascending: true
+                        }
+                    )
+                    .order(
+                        "id",
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+                if (error) {
+
+                    console.error(
+                        "SUPABASE FREE TIPS ERROR:",
+                        error
+                    );
+
+                    renderError(
+                        error.message
+                    );
+
+                    return;
+
+                }
+
+
+                freeTips =
+                    Array.isArray(data)
+                        ? data
+                        : [];
+
+
+                groupedTips = {};
+
+
+                freeTips.forEach(function(tip) {
+
+                    if (!tip.match_date) {
+                        return;
+                    }
+
+                    if (!groupedTips[tip.match_date]) {
+
+                        groupedTips[tip.match_date] = [];
+
+                    }
+
+                    groupedTips[tip.match_date].push(tip);
+
+                });
+
+
+                renderDateButtons();
+
+            } catch (error) {
+
+                console.error(
+                    "FREE TIPS LOAD ERROR:",
+                    error
+                );
+
+                renderError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           DATE BUTTONS
+        ===================================================== */
+
+        function renderDateButtons() {
+
+            const container =
+                document.getElementById(
+                    "dateButtons"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = "";
+
+            const dates =
+                Object.keys(groupedTips);
+
+            if (dates.length === 0) {
+
+                selectedDate = null;
+
+                renderEmptyState();
+
+                return;
+
+            }
+
+
+            dates.forEach(function(date, index) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.type = "button";
+
+                button.className =
+                    "date-btn";
+
+                if (index === 0) {
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    selectedDate = date;
+
+                }
+
+                button.textContent =
+                    getDateLabel(date);
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        selectDate(
+                            date,
+                            button
+                        );
+
+                    }
+                );
+
+                container.appendChild(
+                    button
+                );
+
+            });
+
+
+            renderSelectedDate();
+
+        }
+
+
+        /* =====================================================
+           SELECT DATE
+        ===================================================== */
+
+        function selectDate(
+            date,
+            button
+        ) {
+
+            selectedDate = date;
+
+            document
+                .querySelectorAll(
+                    ".date-btn"
+                )
+                .forEach(function(btn) {
+
+                    btn.classList.remove(
+                        "active"
+                    );
+
+                });
+
+
+            if (button) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            renderSelectedDate();
+
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        function renderSummary(tips) {
+
+            const total =
+                tips.length;
+
+            const won =
+                tips.filter(function(tip) {
+
+                    return String(
+                        tip.result || ""
+                    ).toLowerCase() === "won";
+
+                }).length;
+
+            const lost =
+                tips.filter(function(tip) {
+
+                    return String(
+                        tip.result || ""
+                    ).toLowerCase() === "lost";
+
+                }).length;
+
+            const completed =
+                won + lost;
+
+            const winRate =
+                completed > 0
+                    ? Math.round(
+                        (won / completed) * 100
+                    )
+                    : 0;
+
+
+            return `
+                <div class="results-summary">
+
+                    <div class="summary-card">
+
+                        <div class="summary-label">
+                            Total Tips
+                        </div>
+
+                        <div class="summary-value">
+                            ${total}
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card won">
+
+                        <div class="summary-label">
+                            Won
+                        </div>
+
+                        <div class="summary-value">
+                            ${won}
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card lost">
+
+                        <div class="summary-label">
+                            Lost
+                        </div>
+
+                        <div class="summary-value">
+                            ${lost}
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card rate">
+
+                        <div class="summary-label">
+                            Win Rate
+                        </div>
+
+                        <div class="summary-value">
+                            ${winRate}%
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+
+        /* =====================================================
+           RENDER SELECTED DATE
+        ===================================================== */
+
+        function renderSelectedDate() {
+
+            const container =
+                document.getElementById(
+                    "freeTipsContent"
+                );
+
+            if (!container) {
+                return;
+            }
+
+
+            if (!selectedDate) {
+
+                renderEmptyState();
+
+                return;
+
+            }
+
+
+            const tips =
+                groupedTips[selectedDate] || [];
+
+
+            if (tips.length === 0) {
+
+                renderEmptyState();
+
+                return;
+
+            }
+
+
+            let rows = "";
+
+
+            tips.forEach(function(tip) {
+
+                rows += `
+
+                    <div class="free-row">
+
+                        <div class="tip-time">
+                            ${escapeHtml(
+                                tip.match_time || "--:--"
+                            )}
+                        </div>
+
+
+                        <div class="tip-league">
+                            ${escapeHtml(
+                                tip.league ||
+                                "Football"
+                            )}
+                        </div>
+
+
+                        <div class="free-match">
+
+                            <span class="team-badge">
+                                ${escapeHtml(
+                                    getTeamBadge(
+                                        tip.home_team
+                                    )
+                                )}
+                            </span>
+
+                            <span class="team-name">
+                                ${escapeHtml(
+                                    tip.home_team ||
+                                    "Home Team"
+                                )}
+                            </span>
+
+                            <strong>
+                                VS
+                            </strong>
+
+                            <span class="team-name">
+                                ${escapeHtml(
+                                    tip.away_team ||
+                                    "Away Team"
+                                )}
+                            </span>
+
+                            <span class="team-badge">
+                                ${escapeHtml(
+                                    getTeamBadge(
+                                        tip.away_team
+                                    )
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="free-tip">
+                            ${escapeHtml(
+                                tip.prediction ||
+                                "--"
+                            )}
+                        </div>
+
+
+                        <div class="free-odd">
+                            ${escapeHtml(
+                                tip.odds ??
+                                "--"
+                            )}
+                        </div>
+
+
+                        ${getResultDisplay(
+                            tip.result
+                        )}
+
+                    </div>
+
+                `;
+
+            });
+
+
+            container.innerHTML = `
+
+                <div class="tips-day-title">
+
+                    <h3>
+                        📅 ${escapeHtml(
+                            formatDate(
+                                selectedDate
+                            )
+                        )}
+                    </h3>
+
+                    <div class="tips-day-count">
+
+                        ${tips.length}
+
+                        FREE TIP${tips.length !== 1 ? "S" : ""}
+
+                    </div>
+
+                </div>
+
+
+                ${renderSummary(tips)}
+
+
+                <div class="free-tips-table">
+
+                    <div class="free-header">
+
+                        <div>
+                            TIME
+                        </div>
+
+                        <div>
+                            LEAGUE
+                        </div>
+
+                        <div>
+                            MATCH
+                        </div>
+
+                        <div>
+                            TIP
+                        </div>
+
+                        <div>
+                            ODD
+                        </div>
+
+                        <div>
+                            RESULT
+                        </div>
+
+                    </div>
+
+
+                    ${rows}
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        function renderEmptyState() {
+
+            const dateButtons =
+                document.getElementById(
+                    "dateButtons"
+                );
+
+            const content =
+                document.getElementById(
+                    "freeTipsContent"
+                );
+
+
+            if (dateButtons) {
+
+                dateButtons.innerHTML = "";
+
+            }
+
+
+            if (content) {
+
+                content.innerHTML = `
+
+                    <div class="free-tips-empty">
+
+                        <div class="empty-icon">
+                            ⚽
+                        </div>
+
+                        <h3>
+                            No Free Tips Available
+                        </h3>
+
+                        <p>
+                            New free football tips will appear here
+                            when they are published.
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           ERROR STATE
+        ===================================================== */
+
+        function renderError(message) {
+
+            const content =
+                document.getElementById(
+                    "freeTipsContent"
+                );
+
+
+            if (!content) {
+                return;
+            }
+
+
+            content.innerHTML = `
+
+                <div class="free-tips-empty">
+
+                    <div class="empty-icon">
+                        ⚠️
+                    </div>
+
+                    <h3>
+                        Unable to Load Free Tips
+                    </h3>
+
+                    <p>
+                        There was a problem connecting to the
+                        Free Tips database.
+                    </p>
+
+                    <p style="margin-top:12px;color:#888;font-size:12px;">
+                        ${escapeHtml(
+                            message || ""
+                        )}
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="loadFreeTips()"
+                        style="
+                            margin-top:20px;
+                            padding:11px 20px;
+                            border:1px solid #d4af37;
+                            background:#d4af37;
+                            color:#111;
+                            border-radius:7px;
+                            font-weight:800;
+                            cursor:pointer;
+                        "
+                    >
+                        TRY AGAIN
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =====================================================
+           MOBILE MENU
+        ===================================================== */
+
+        function setupMobileMenu() {
+
+            const menuButton =
+                document.querySelector(
+                    ".menu-btn"
+                );
+
+            const navbar =
+                document.querySelector(
+                    ".navbar"
+                );
+
+
+            if (!menuButton || !navbar) {
+                return;
+            }
+
+
+            menuButton.addEventListener(
+                "click",
+                function() {
+
+                    navbar.classList.toggle(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            navbar
+                .querySelectorAll("a")
+                .forEach(function(link) {
+
+                    link.addEventListener(
+                        "click",
+                        function() {
+
+                            navbar.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+                });
+
+        }
+
+
+        /* =====================================================
+           START
+        ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                setupMobileMenu();
+
+                loadFreeTips();
+
+            }
+        );
+
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const navbar = document.getElementById("mainNavbar");
+
+    if (!navbar) return;
+
+    const links = navbar.querySelectorAll("a[data-page]");
+
+    links.forEach(function (link) {
+
+        link.addEventListener("click", function (event) {
+
+            event.preventDefault();
+
+            const page = this.getAttribute("data-page");
+
+            if (!page) return;
+
+            window.location.assign("./" + page);
+
+        });
+
+    });
+
+});
+</script>
+</body>
+
+</html>
