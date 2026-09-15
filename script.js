@@ -503,3 +503,33 @@ document.addEventListener("click", function (event) {
     }
 
 });
+// =========================================================
+// GOOGLE ANALYTICS - VIP WHATSAPP CLICK TRACKING
+// =========================================================
+
+document.addEventListener("click", function (event) {
+
+    const vipWhatsAppLink =
+        event.target.closest('a[href*="wa.me"]');
+
+    if (!vipWhatsAppLink) {
+        return;
+    }
+
+    const currentPage =
+        window.location.pathname;
+
+    if (currentPage.includes("vip.html")) {
+
+        if (typeof gtag === "function") {
+
+            gtag("event", "vip_whatsapp_click", {
+                link_url: vipWhatsAppLink.href,
+                page_location: window.location.href
+            });
+
+        }
+
+    }
+
+});
