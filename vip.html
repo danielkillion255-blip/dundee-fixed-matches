@@ -2148,7 +2148,14 @@ async function activateVipCode() {
             return;
 
         }
+// GA4 - VIP activation success
+if (typeof gtag === "function") {
 
+    gtag("event", "vip_activation_success", {
+        page_location: window.location.href
+    });
+
+}
 
         sessionStorage.setItem(
             "dundeeVipUnlocked",
